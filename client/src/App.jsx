@@ -26,9 +26,18 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <div style={{ padding: '40px', textAlign: 'center' }}>
+      <div className="hero-section">
         <h1>Album of the week</h1>
         <p>Rediscover the classics through the blockchain.</p>
+        <div className="featured-album">
+          <img src={albums[0].cover} alt={albums[0].title} className="featured-cover" />
+          <div className="featured-info">
+            <h2>{albums[0].title}</h2>
+            <p className="featured-artist">{albums[0].artist}</p>
+            <p className="featured-price">{albums[0].price}</p>
+            <button className="btn-connect btn-large">Buy Now</button>
+          </div>
+        </div>
       </div>
 
       {/* Catalog Grid */}
