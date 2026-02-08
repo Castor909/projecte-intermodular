@@ -20,8 +20,13 @@ Vinyl has experienced a significant revival over the last 15-20 years. VinylEth 
 ## 🛠 Installation & Setup
 
 ### Prerequisites
-* Node.js (v14+) installed
-* MongoDB running locally or Atlas URI (optional for now - frontend only works without DB)
+* Node.js v20.19+ (required by MongoDB/Mongoose dependencies)
+* MongoDB running locally or Atlas URI (optional for now - frontend works without DB)
+
+If you use nvm, install the required Node once (not per folder):
+```bash
+nvm install 20.19.0 && nvm use 20.19.0
+```
 
 ### Steps
 1.  Clone the repository:
@@ -29,7 +34,7 @@ Vinyl has experienced a significant revival over the last 15-20 years. VinylEth 
     git clone https://github.com/Castor909/projecte-intermodular.git
     cd projecte-intermodular
     ```
-2.  Install Server dependencies:
+2.  Install Server dependencies (optional for now):
     ```bash
     cd server
     npm install
@@ -39,19 +44,19 @@ Vinyl has experienced a significant revival over the last 15-20 years. VinylEth 
     cd ../client
     npm install
     ```
-4.  **Open two terminal windows** and run:
-    * **Terminal 1 (Server)**:
-      ```bash
-      cd server
-      node index.js
-      ```
-      Server will run on `http://localhost:5000`
-    * **Terminal 2 (Client)**:
-      ```bash
-      cd client
-      npm run dev
-      ```
-      Client will run on `http://localhost:5173`
+4.  **Open one or two terminal windows** and run:
+        * **Terminal 1 (Server, optional)**:
+            ```bash
+            cd server
+            node index.js
+            ```
+            Server will run on `http://localhost:5000`
+        * **Terminal 2 (Client)**:
+            ```bash
+            cd client
+            npm run dev
+            ```
+            Client will run on `http://localhost:5173`
 
 5.  Open `http://localhost:5173` in your browser
 
