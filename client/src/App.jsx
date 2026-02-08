@@ -1,11 +1,15 @@
 import React from 'react';
 
+import cover1 from './assets/images/dark-side-of-the-moon.jpg'; 
+import cover2 from './assets/images/abbey-road.jpg';
+import cover3 from './assets/images/rumours.jpg';
+
 function App() {
   // Mock Data for catalog - in a real app, this would come from an API or blockchain
   const albums = [
-    { id: 1, title: "Dark Side of the Moon", artist: "Pink Floyd", price: "0.05 ETH" },
-    { id: 2, title: "Abbey Road", artist: "The Beatles", price: "0.034 ETH" },
-    { id: 3, title: "Rumours", artist: "Fleetwood Mac", price: "0.04 ETH" }
+    { id: 1, title: "Dark Side of the Moon", artist: "Pink Floyd", price: "0.05 ETH", cover: cover1 },
+    { id: 2, title: "Abbey Road", artist: "The Beatles", price: "0.034 ETH", cover: cover2 },
+    { id: 3, title: "Rumours", artist: "Fleetwood Mac", price: "0.04 ETH", cover: cover3 }
   ];
 
   return (
@@ -33,7 +37,7 @@ function App() {
         <div className="catalog-grid">
           {albums.map((album) => (
             <div key={album.id} className="album-card">
-              <div className="album-cover">Cover Art</div>
+              <img src={album.cover} alt={album.title} className="album-cover" />
               <h3>{album.title}</h3>
               <p>{album.artist}</p>
               <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.price}</p>

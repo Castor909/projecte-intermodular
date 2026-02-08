@@ -45,7 +45,7 @@ Vinyl has experienced a significant revival over the last 15-20 years. VinylEth 
 ## 📅 Roadmap
 * [x] Initial Environment Setup
 * [ ] Database Design & Connection
-* [ ] Home Page Implementation
+* [x] Home Page Implementation
 * [ ] Product Details & Cart
 * [ ] Smart Contract Integration
 
