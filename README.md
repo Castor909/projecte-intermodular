@@ -17,7 +17,13 @@ Vinyl has experienced a significant revival over the last 15-20 years. VinylEth 
 * **Palette**: Cream (Background), Dark Brown (Text), Burnt Orange (Accents).
 * **Typography**: Playfair Display.
 
-## 🛠 Installation & Setup
+## � Project Resources
+* **GitHub Repository**: https://github.com/Castor909/projecte-intermodular
+* **Trello Board**: https://trello.com/b/DAAdSBPs/projecte-intermodular
+* **Student**: Stepan Andreev
+* **Course**: Projecte Intermodular UD1A
+
+## �🛠 Installation & Setup
 
 ### Prerequisites
 * Node.js v20.19+ (required by MongoDB/Mongoose dependencies)
@@ -66,6 +72,26 @@ nvm install 20.19.0 && nvm use 20.19.0
 * [x] Home Page Implementation
 * [ ] Product Details & Cart
 * [ ] Smart Contract Integration
+
+## 📋 UD1A - Current Status
+
+### ✅ Implemented Features
+* Project structure setup with MERN stack
+* Development environment configuration (Node.js, React with Vite)
+* Home page with album catalog display
+* "Album of the Week" featured section
+* Responsive grid layout for vinyl records
+* Design system implementation (Retro/Vintage aesthetic with Playfair Display)
+* Basic Express.js server setup
+* GitHub repository with version control
+* Trello board for project management
+
+### 🔄 Next Steps (UD1B)
+* Database integration with MongoDB
+* Backend API endpoints for albums
+* Shopping cart functionality
+* Product detail pages
+* MetaMask wallet connection
 
 ---
 *Projecte Intermodular UD1A - Stepan Andreev*
