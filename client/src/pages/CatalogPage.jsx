@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FeaturedAlbum from '../components/FeaturedAlbum';
 import AlbumCard from '../components/AlbumCard';
-
-import cover1 from '../assets/images/dark-side-of-the-moon.jpg';
-import cover2 from '../assets/images/abbey-road.jpg';
-import cover3 from '../assets/images/rumours.jpg';
-
-// TODO: Replace with API data in next commit
-const albums = [
-  { id: 1, title: "Dark Side of the Moon", artist: "Pink Floyd", price: "0.05 ETH", cover: cover1 },
-  { id: 2, title: "Abbey Road", artist: "The Beatles", price: "0.034 ETH", cover: cover2 },
-  { id: 3, title: "Rumours", artist: "Fleetwood Mac", price: "0.04 ETH", cover: cover3 }
-];
+import { fetchAlbums } from '../api/albums';
 
 function CatalogPage() {
+  const [albums, setAlbums] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAlbums()
+      .then((data) => {
+        setAlbums(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div style={{ padding: 40 }}>Loading albums...</div>;
+  if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
+  if (albums.length === 0) return <div style={{ padding: 40 }}>No albums found.</div>;
+
   return (
     <>
       <FeaturedAlbum album={albums[0]} />
@@ -21,7 +31,11 @@ function CatalogPage() {
         <h2 style={{ paddingLeft: '40px' }}>New Arrivals</h2>
         <div className="catalog-grid">
           {albums.map((album) => (
-            <AlbumCard key={album.id} album={album} />
+            <AlbumCard key={album._id || album.id} album={{
+              ...album,
+              cover: album.coverUrl || album.cover,
+              price: album.priceEth ? `${album.priceEth} ETH` : album.price
+            }} />
           ))}
         </div>
       </section>
