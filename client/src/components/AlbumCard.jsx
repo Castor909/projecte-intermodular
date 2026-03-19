@@ -1,13 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AlbumCard({ album }) {
+  const navigate = useNavigate();
   return (
     <div className="album-card">
       <img src={album.cover} alt={album.title} className="album-cover" />
       <h3>{album.title}</h3>
       <p>{album.artist}</p>
       <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.price}</p>
-      <button className="btn-connect" style={{ width: '100%' }}>View</button>
+      <button className="btn-connect" style={{ width: '100%' }} onClick={() => navigate(`/album/${album._id || album.id}`)}>
+        View
+      </button>
     </div>
   );
 }

@@ -1,13 +1,12 @@
 import React from 'react';
-import Header from './components/Header';
-import CatalogPage from './pages/CatalogPage';
+import { CartProvider } from './CartContext';
+import Router from './Router';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <CatalogPage />
-    </div>
+    <CartProvider>
+      <Router />
+    </CartProvider>
   );
 }
 
