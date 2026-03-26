@@ -1,5 +1,5 @@
 import React from 'react';
-import { CartProvider } from './CartContext';
+import { CartProvider } from './CartContext.jsx';
 import Router from './Router';
 
 function App() {

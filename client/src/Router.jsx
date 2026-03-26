@@ -4,7 +4,7 @@ import CatalogPage from './pages/CatalogPage';
 import AlbumDetailPage from './pages/AlbumDetailPage';
 import CartPage from './pages/CartPage';
 import Header from './components/Header';
-import { useCart } from './CartContext';
+import { useCart } from './CartContext.jsx';
 
 function Router() {
   const { cart, addToCart, removeFromCart, clearCart } = useCart();

@@ -11,7 +11,12 @@ function CatalogPage() {
   useEffect(() => {
     fetchAlbums()
       .then((data) => {
-        setAlbums(data);
+        const transformed = data.map((album) => ({
+          ...album,
+          cover: album.coverUrl || album.cover,
+          price: album.priceEth ? `${album.priceEth} ETH` : album.price,
+        }));
+        setAlbums(transformed);
         setLoading(false);
       })
       .catch((err) => {
@@ -31,11 +36,7 @@ function CatalogPage() {
         <h2 style={{ paddingLeft: '40px' }}>New Arrivals</h2>
         <div className="catalog-grid">
           {albums.map((album) => (
-            <AlbumCard key={album._id || album.id} album={{
-              ...album,
-              cover: album.coverUrl || album.cover,
-              price: album.priceEth ? `${album.priceEth} ETH` : album.price
-            }} />
+            <AlbumCard key={album._id || album.id} album={album} />
           ))}
         </div>
       </section>
