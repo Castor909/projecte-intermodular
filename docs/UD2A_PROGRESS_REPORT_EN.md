@@ -142,7 +142,26 @@ Runtime backend checks were completed after switching to Docker MongoDB fallback
 - Documentation professionalization: achieved (README update + this report).
 - Real integration signal: achieved (frontend + backend + database runtime path validated).
 
-## 8. Next Recommended Step
+## 8. BK Backlog Status (Trello Mapping)
+Done:
+1. BK-01 Initial Environment Setup.
+2. BK-03 Home Page.
+3. BK-05 Shopping Cart.
+
+In Progress / Partial:
+1. BK-02 Database Design (core schema implemented; audio URL field not implemented).
+2. BK-04 Product Detail Page (album detail implemented; tracklist not implemented).
+3. BK-06 Payment Gateway (Ethereum) (wallet connect/disconnect implemented; on-chain transfer flow not implemented).
+
+To Do:
+1. BK-07 Audio Player.
+2. BK-08 Shipping Form.
+3. BK-09 User Registration.
+4. BK-10 Special Offers Section.
+5. BK-11 Discogs API Integration.
+6. BK-12 Admin Panel.
+
+## 9. Next Recommended Step
 1. Validate wallet UX in browser with MetaMask installed.
 2. Validate cart quantity persistence after reload.
 3. Continue Web3 phase with transaction flow when scope allows.
