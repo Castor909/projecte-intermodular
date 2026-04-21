@@ -68,30 +68,39 @@ nvm install 20.19.0 && nvm use 20.19.0
 
 ## 📅 Roadmap
 * [x] Initial Environment Setup
-* [ ] Database Design & Connection
+* [x] Database Design & Connection
 * [x] Home Page Implementation
-* [ ] Product Details & Cart
-* [ ] Smart Contract Integration
+* [x] Product Details & Cart
+* [ ] Smart Contract Integration (planned)
 
-## 📋 UD1A - Current Status
+## 📋 Current Implementation Status
 
-### ✅ Implemented Features
-* Project structure setup with MERN stack
-* Development environment configuration (Node.js, React with Vite)
-* Home page with album catalog display
-* "Album of the Week" featured section
-* Responsive grid layout for vinyl records
-* Design system implementation (Retro/Vintage aesthetic with Playfair Display)
-* Basic Express.js server setup
-* GitHub repository with version control
-* Trello board for project management
+### ✅ Consolidated Through UD1B
+* MongoDB integration with album model and seed dataset
+* Backend API endpoints for album list and album details
+* Frontend catalog connected to backend API
+* Album detail page with route-based navigation
+* Local cart with persistence (localStorage)
+* Folder split by pages/components/api/context for clearer responsibility separation
 
-### 🔄 Next Steps (UD1B)
-* Database integration with MongoDB
-* Backend API endpoints for albums
-* Shopping cart functionality
-* Product detail pages
-* MetaMask wallet connection
+### ✅ Implemented in this UD2A Session
+* Basic MetaMask wallet connection in header (connect/disconnect + account badge)
+* Cart quantity controls (+/-) with persistent totals
+* Stock-aware cart behavior (quantity capped by available stock)
+* Catalog search, genre filter, and sorting controls
+* Improved API error propagation to frontend messages
+* Backend validation for malformed album id (`400`) vs missing album (`404`)
+* Lightweight API contract test script for `200/400/404` behavior
+* Cart state transition checks for edge cases (stock limit, decrement removal, out-of-stock, remove)
+
+### 🔄 Next Steps (UD2A)
+* Continue Web3 phase with payment transaction flow
+
+### ⚠ Runtime Note
+Backend startup requires MongoDB available at `MONGO_URI`.
+If MongoDB is not running, the server exits during startup and API runtime checks cannot be completed.
+If your local MongoDB service is unstable, use a Docker fallback:
+`docker run -d --name ud2a-mongo -p 27017:27017 mongo:7`
 
 ---
-*Projecte Intermodular UD1A - Stepan Andreev*
+*Projecte Intermodular - Stepan Andreev*
