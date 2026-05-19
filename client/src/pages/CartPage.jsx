@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartNotice, onClearNotice }) {
+  const navigate = useNavigate();
   const total = cart.reduce((sum, item) => sum + (item.priceEth * item.qty), 0);
   return (
     <div className="cart-page" style={{ padding: 40 }}>
@@ -39,7 +41,12 @@ function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartN
           <div style={{ marginTop: 20 }}>
             <b>Total: {total.toFixed(3)} ETH</b>
           </div>
-          <button style={{ marginTop: 20 }} onClick={() => { onClear(); onClearNotice(); }}>Clear Cart</button>
+          <div className="cart-actions">
+            <button onClick={() => { onClear(); onClearNotice(); }}>Clear Cart</button>
+            <button className="btn-connect btn-large" onClick={() => navigate('/checkout/shipping')}>
+              Proceed to Checkout →
+            </button>
+          </div>
         </>
       )}
     </div>

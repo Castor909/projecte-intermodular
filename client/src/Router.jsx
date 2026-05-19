@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CatalogPage from './pages/CatalogPage';
 import AlbumDetailPage from './pages/AlbumDetailPage';
 import CartPage from './pages/CartPage';
+import ShippingPage from './pages/ShippingPage';
 import Header from './components/Header';
 import { useCart } from './useCart';
 
@@ -40,6 +41,7 @@ function Router() {
             />
           )}
         />
+        <Route path="/checkout/shipping" element={<ShippingPage />} />
       </Routes>
     </BrowserRouter>
   );
