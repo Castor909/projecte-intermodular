@@ -51,6 +51,12 @@ const albumSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    tracks: [
+      {
+        title: { type: String, required: true },
+        duration: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,

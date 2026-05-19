@@ -250,3 +250,37 @@ nav a {
     margin: 0 20px 30px;
   }
 }
+
+/* Tracklist */
+.track-list {
+  margin-top: 40px;
+  max-width: 560px;
+}
+
+.track-list h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--text-color);
+  padding-bottom: 6px;
+}
+
+.track-list ol {
+  list-style: decimal;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.track-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(62, 39, 35, 0.1);
+  font-size: 0.95rem;
+}
+
+.track-duration {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-left: 16px;
+}

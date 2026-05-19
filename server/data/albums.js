@@ -11,6 +11,17 @@ const albums = [
     description:
       'A landmark progressive rock album with atmospheric production and one of the most iconic covers in music history.',
     audioUrl: '/audio/preview-dark-side.mp3',
+    tracks: [
+      { title: 'Speak to Me / Breathe', duration: '3:57' },
+      { title: 'On the Run', duration: '3:30' },
+      { title: 'Time', duration: '6:53' },
+      { title: 'The Great Gig in the Sky', duration: '4:44' },
+      { title: 'Money', duration: '6:22' },
+      { title: 'Us and Them', duration: '7:51' },
+      { title: 'Any Colour You Like', duration: '3:25' },
+      { title: 'Brain Damage', duration: '3:47' },
+      { title: 'Eclipse', duration: '2:03' },
+    ],
   },
   {
     title: 'Abbey Road',
@@ -24,6 +35,25 @@ const albums = [
     description:
       'The Beatles at their late creative peak, blending polished songwriting with studio experimentation and timeless melodies.',
     audioUrl: '/audio/preview-abbey-road.mp3',
+    tracks: [
+      { title: 'Come Together', duration: '4:19' },
+      { title: 'Something', duration: '3:02' },
+      { title: "Maxwell's Silver Hammer", duration: '3:27' },
+      { title: 'Oh! Darling', duration: '3:26' },
+      { title: "Octopus's Garden", duration: '2:51' },
+      { title: "I Want You (She's So Heavy)", duration: '7:47' },
+      { title: 'Here Comes the Sun', duration: '3:06' },
+      { title: 'Because', duration: '2:45' },
+      { title: 'You Never Give Me Your Money', duration: '4:02' },
+      { title: 'Sun King', duration: '2:26' },
+      { title: 'Mean Mr Mustard', duration: '1:06' },
+      { title: 'Polythene Pam', duration: '1:12' },
+      { title: 'She Came In Through the Bathroom Window', duration: '1:57' },
+      { title: 'Golden Slumbers', duration: '1:31' },
+      { title: 'Carry That Weight', duration: '1:36' },
+      { title: 'The End', duration: '2:20' },
+      { title: 'Her Majesty', duration: '0:23' },
+    ],
   },
   {
     title: 'Rumours',
@@ -37,6 +67,18 @@ const albums = [
     description:
       'A deeply personal and commercially massive record built on sharp songwriting, layered harmonies, and studio precision.',
     audioUrl: '/audio/preview-rumours.mp3',
+    tracks: [
+      { title: 'Second Hand News', duration: '2:43' },
+      { title: 'Dreams', duration: '4:17' },
+      { title: 'Never Going Back Again', duration: '2:14' },
+      { title: "Don't Stop", duration: '3:11' },
+      { title: 'Go Your Own Way', duration: '3:38' },
+      { title: 'The Chain', duration: '4:29' },
+      { title: 'You Make Loving Fun', duration: '3:31' },
+      { title: "I Don't Want to Know", duration: '3:11' },
+      { title: 'Oh Daddy', duration: '3:53' },
+      { title: 'Gold Dust Woman', duration: '4:51' },
+    ],
   },
 ];
 

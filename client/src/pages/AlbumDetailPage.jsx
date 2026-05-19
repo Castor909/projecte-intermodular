@@ -63,6 +63,19 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           {addMessage && <p className="notice success">{addMessage}</p>}
         </div>
       </div>
+      {album.tracks && album.tracks.length > 0 && (
+        <div className="track-list">
+          <h3>Tracklist</h3>
+          <ol>
+            {album.tracks.map((track, index) => (
+              <li key={index} className="track-item">
+                <span className="track-title">{track.title}</span>
+                {track.duration && <span className="track-duration">{track.duration}</span>}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }
