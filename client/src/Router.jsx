@@ -4,6 +4,7 @@ import CatalogPage from './pages/CatalogPage';
 import AlbumDetailPage from './pages/AlbumDetailPage';
 import CartPage from './pages/CartPage';
 import ShippingPage from './pages/ShippingPage';
+import PaymentPage from './pages/PaymentPage';
 import Header from './components/Header';
 import { useCart } from './useCart';
 
@@ -42,6 +43,7 @@ function Router() {
           )}
         />
         <Route path="/checkout/shipping" element={<ShippingPage />} />
+        <Route path="/checkout/payment" element={<PaymentPage />} />
       </Routes>
     </BrowserRouter>
   );
