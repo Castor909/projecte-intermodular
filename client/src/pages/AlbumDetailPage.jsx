@@ -61,6 +61,16 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           </button>
           {cartNotice && <p className="notice warning">{cartNotice}</p>}
           {addMessage && <p className="notice success">{addMessage}</p>}
+
+          {(album.label || album.country || album.vinylFormat || album.barcode) && (
+            <dl className="vinyl-specs">
+              <h3 className="vinyl-specs__title">Vinyl specs</h3>
+              {album.vinylFormat && <><dt>Format</dt><dd>{album.vinylFormat}</dd></>}
+              {album.label && <><dt>Label</dt><dd>{album.label}</dd></>}
+              {album.country && <><dt>Country</dt><dd>{album.country}</dd></>}
+              {album.barcode && <><dt>Barcode</dt><dd>{album.barcode}</dd></>}
+            </dl>
+          )}
         </div>
       </div>
       {album.tracks && album.tracks.length > 0 && (

@@ -57,6 +57,11 @@ const albumSchema = new mongoose.Schema(
         duration: { type: String },
       },
     ],
+    label: { type: String, trim: true },
+    country: { type: String, trim: true },
+    vinylFormat: { type: String, trim: true },
+    barcode: { type: String, trim: true },
+    mbid: { type: String, trim: true },
   },
   {
     timestamps: true,

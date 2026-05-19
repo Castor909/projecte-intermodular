@@ -549,6 +549,37 @@ nav a {
   }
 }
 
+/* Vinyl specs */
+.vinyl-specs {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(62, 39, 35, 0.15);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  align-items: baseline;
+}
+
+.vinyl-specs__title {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 8px;
+  opacity: 0.6;
+}
+
+.vinyl-specs dt {
+  font-size: 0.8rem;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+.vinyl-specs dd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
 /* Tracklist */
 .track-list {
   margin-top: 40px;

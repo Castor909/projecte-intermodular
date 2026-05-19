@@ -7,7 +7,8 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "node scripts/api-contract-check.js",
-    "test:contracts": "node scripts/api-contract-check.js"
+    "test:contracts": "node scripts/api-contract-check.js",
+    "enrich": "node scripts/enrich-albums.js"
   },
   "keywords": [],
   "author": "",
