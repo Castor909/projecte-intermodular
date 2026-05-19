@@ -63,7 +63,7 @@ const albums = [
     priceEth: 0.04,
     coverUrl: '/images/rumours.jpg',
     stock: 6,
-    featured: false,
+    featured: true,
     description:
       'A deeply personal and commercially massive record built on sharp songwriting, layered harmonies, and studio precision.',
     audioUrl: '/audio/preview-rumours.mp3',

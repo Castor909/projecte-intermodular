@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import FeaturedAlbum from '../components/FeaturedAlbum';
+import SpecialOffers from '../components/SpecialOffers';
 import AlbumCard from '../components/AlbumCard';
 import { fetchAlbums } from '../api/albums';
 
@@ -85,6 +86,7 @@ function CatalogPage() {
   return (
     <>
       <FeaturedAlbum album={albums[0]} />
+      <SpecialOffers albums={albums} />
       <section className="catalog-toolbar-section">
         <div className="catalog-toolbar">
           <div className="catalog-toolbar__group">
