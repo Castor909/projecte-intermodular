@@ -10,6 +10,7 @@ const albums = [
     featured: true,
     description:
       'A landmark progressive rock album with atmospheric production and one of the most iconic covers in music history.',
+    audioUrl: '/audio/preview-dark-side.mp3',
   },
   {
     title: 'Abbey Road',
@@ -22,6 +23,7 @@ const albums = [
     featured: false,
     description:
       'The Beatles at their late creative peak, blending polished songwriting with studio experimentation and timeless melodies.',
+    audioUrl: '/audio/preview-abbey-road.mp3',
   },
   {
     title: 'Rumours',
@@ -34,6 +36,7 @@ const albums = [
     featured: false,
     description:
       'A deeply personal and commercially massive record built on sharp songwriting, layered harmonies, and studio precision.',
+    audioUrl: '/audio/preview-rumours.mp3',
   },
 ];
 

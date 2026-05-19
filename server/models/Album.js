@@ -47,6 +47,10 @@ const albumSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    audioUrl: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
