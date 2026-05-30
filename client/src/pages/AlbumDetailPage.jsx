@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchAlbumById } from '../api/albums';
+import AudioPlayer from '../components/AudioPlayer';
 
 function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   const { id } = useParams();
@@ -61,6 +62,8 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           </button>
           {cartNotice && <p className="notice warning">{cartNotice}</p>}
           {addMessage && <p className="notice success">{addMessage}</p>}
+
+          {album.audioUrl && <AudioPlayer src={album.audioUrl} />}
 
           {(album.label || album.country || album.vinylFormat || album.barcode) && (
             <dl className="vinyl-specs">

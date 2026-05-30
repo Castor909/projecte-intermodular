@@ -614,6 +614,96 @@ nav a {
   margin-left: 16px;
 }
 
+/* ===== Audio Player ===== */
+
+.audio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--text-color);
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 20px 0;
+  max-width: 420px;
+}
+
+.audio-player__btn {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.audio-player__btn:hover {
+  opacity: 0.8;
+}
+
+.audio-player__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: audio-spin 0.7s linear infinite;
+}
+
+@keyframes audio-spin {
+  to { transform: rotate(360deg); }
+}
+
+.audio-player__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.audio-player__label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-bottom: 7px;
+}
+
+.audio-player__bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.audio-player__bar:hover .audio-player__progress {
+  filter: brightness(1.2);
+}
+
+.audio-player__progress {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: 2px;
+  max-width: 100%;
+  transition: width 0.1s linear;
+}
+
+.audio-player__time {
+  font-size: 0.72rem;
+  opacity: 0.65;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ===== Admin Panel ===== */
 
 .admin-login-page {
