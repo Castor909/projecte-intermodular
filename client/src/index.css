@@ -871,6 +871,30 @@ nav a {
   font-size: 0.95rem;
 }
 
+.admin-audio-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-audio-row input {
+  flex: 1;
+}
+
+.admin-preview-ok {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #1d6b3b;
+}
+
+.admin-preview-err {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #8c3b00;
+}
+
 .admin-track-row {
   display: flex;
   gap: 8px;

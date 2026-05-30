@@ -58,6 +58,18 @@ export async function updateAlbum(id, albumData) {
   return res.json();
 }
 
+export async function fetchItunesPreview(artist, album) {
+  const params = new URLSearchParams({ artist, album });
+  const res = await fetch(`/api/itunes/preview?${params}`, {
+    headers: { 'x-admin-token': getToken() },
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Failed to fetch from iTunes');
+  }
+  return res.json();
+}
+
 export async function fetchDiscogsRelease(releaseId) {
   const res = await fetch(`/api/discogs/release/${releaseId}`, {
     headers: { 'x-admin-token': getToken() },

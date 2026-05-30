@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fetchDiscogsRelease } from '../api/admin';
+import { fetchDiscogsRelease, fetchItunesPreview } from '../api/admin';
 
 const EMPTY_FORM = {
   title: '',
@@ -116,6 +116,10 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
   const [fetchingDiscogs, setFetchingDiscogs] = useState(false);
   const [discogsResult, setDiscogsResult] = useState(null); // { ok, message }
 
+  // iTunes preview state
+  const [fetchingPreview, setFetchingPreview] = useState(false);
+  const [previewResult, setPreviewResult] = useState(null); // { ok, message }
+
   async function fetchFromDiscogs() {
     const id = discogsId.trim();
     if (!id) return;
@@ -141,6 +145,20 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
       setDiscogsResult({ ok: false, message: err.message });
     } finally {
       setFetchingDiscogs(false);
+    }
+  }
+
+  async function handleFetchPreview() {
+    setFetchingPreview(true);
+    setPreviewResult(null);
+    try {
+      const data = await fetchItunesPreview(form.artist.trim(), form.title.trim());
+      setForm((prev) => ({ ...prev, audioUrl: data.previewUrl }));
+      setPreviewResult({ ok: true, message: `Found: "${data.trackName}" — ${data.collectionName}` });
+    } catch (err) {
+      setPreviewResult({ ok: false, message: err.message });
+    } finally {
+      setFetchingPreview(false);
     }
   }
 
@@ -312,7 +330,28 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
         </div>
         <div className="form-field" style={{ marginTop: 12 }}>
           <label>Audio preview URL</label>
-          <input name="audioUrl" value={form.audioUrl} onChange={handleChange} placeholder="https://..." />
+          <div className="admin-audio-row">
+            <input
+              name="audioUrl"
+              value={form.audioUrl}
+              onChange={(e) => { handleChange(e); setPreviewResult(null); }}
+              placeholder="https://..."
+            />
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleFetchPreview}
+              disabled={!form.title.trim() || !form.artist.trim() || fetchingPreview}
+              title={!form.title.trim() || !form.artist.trim() ? 'Fill in Title and Artist first' : 'Fetch 30-sec preview from iTunes'}
+            >
+              {fetchingPreview ? 'Fetching…' : '♪ iTunes'}
+            </button>
+          </div>
+          {previewResult && (
+            <small className={previewResult.ok ? 'admin-preview-ok' : 'admin-preview-err'}>
+              {previewResult.message}
+            </small>
+          )}
         </div>
       </section>
 

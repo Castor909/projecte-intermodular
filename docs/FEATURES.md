@@ -206,6 +206,15 @@
 - Данные загружаются через тот же публичный `GET /api/albums`.
 - Счётчик «Albums (N)» в заголовке.
 
+**Автозаполнение из Discogs**
+- Секция в верхней части формы, выделена оранжевой пунктирной рамкой.
+- Поле «Release ID» принимает числовой ID из URL Discogs: `discogs.com/release/249504`.
+- Кнопка «↓ Fetch data» запрашивает данные через серверный прокси (`GET /api/discogs/release/:id`).
+- Заполняет поля: title, artist, year, genre, cover URL, label, country, format, barcode и весь трекбист.
+- Очищает ошибки валидации для заполненных полей.
+- Artist очищается от disambiguator-суффиксов Discogs (`(2)`, `*`).
+- После успеха показывает список заполненных полей; при ошибке — красное сообщение.
+
 **Создание альбома (+ Add Album)**
 - Открывает форму. Обязательные поля: Title, Artist, Year, Genre, Price (ETH), Cover URL, Stock, Description.
 - Опциональные поля: Featured (checkbox), Audio URL.
@@ -214,6 +223,13 @@
 - Превью обложки — живой `<img>` тег по введённому URL; скрывается при ошибке загрузки.
 - Клиентская валидация: все обязательные поля, числовой формат year/priceEth/stock.
 - После успешного сохранения новый альбом добавляется в начало таблицы без перезагрузки страницы.
+
+**Кнопка «♪ iTunes» (автофетч превью)**
+- Расположена рядом с полем «Audio preview URL».
+- Активна только когда заполнены Title и Artist; при наведении на неактивную кнопку — подсказка.
+- Запрашивает 30-секундный CDN-URL через серверный прокси (`GET /api/itunes/preview`).
+- При успехе вставляет URL в поле и показывает: `Found: "Money" — The Dark Side of the Moon`.
+- При ошибке — красное сообщение под полем.
 
 **Редактирование альбома (Edit)**
 - Та же форма, предзаполненная данными выбранного альбома.
@@ -244,6 +260,8 @@
 | PUT | `/api/albums/:id` | Admin | Обновить альбом |
 | DELETE | `/api/albums/:id` | Admin | Удалить альбом |
 | POST | `/api/admin/login` | — | Вход администратора, возвращает токен |
+| GET | `/api/discogs/release/:id` | Admin | Прокси к Discogs API — метаданные релиза |
+| GET | `/api/itunes/preview` | Admin | Прокси к iTunes Search API — URL аудиопревью |
 
 **Авторизация admin-маршрутов**
 - Middleware `requireAdmin` проверяет заголовок `x-admin-token`.
@@ -269,12 +287,12 @@
 | `stock` | Number | Количество на складе |
 | `featured` | Boolean | Помечен как избранный |
 | `description` | String | Описание |
-| `audioUrl` | String | URL аудиопревью (необязательно) |
+| `audioUrl` | String | URL 30-сек аудиопревью (iTunes CDN или любой прямой URL) |
 | `tracks` | Array | Список треков `{title, duration}` |
-| `label` | String | Лейбл (от MusicBrainz) |
-| `country` | String | Страна издания (от MusicBrainz) |
-| `vinylFormat` | String | Формат: «12" Vinyl» и др. (от MusicBrainz) |
-| `barcode` | String | Штрихкод (от MusicBrainz) |
+| `label` | String | Лейбл (от Discogs / MusicBrainz) |
+| `country` | String | Страна издания (от Discogs / MusicBrainz) |
+| `vinylFormat` | String | Формат: «Vinyl, LP, Album» и др. (от Discogs / MusicBrainz) |
+| `barcode` | String | Штрихкод (от Discogs / MusicBrainz) |
 | `mbid` | String | MusicBrainz Release ID |
 
 ### Автосид (seed)
@@ -288,12 +306,27 @@
 
 ## Инструменты разработчика
 
-### Обогащение данных MusicBrainz (`npm run enrich`)
+### Обогащение метаданных — MusicBrainz (`npm run enrich`)
 
-- Скрипт `server/scripts/enrich-albums.js` обходит все альбомы в БД и запрашивает данные из [MusicBrainz API](https://musicbrainz.org/ws/2).
+- Скрипт `server/scripts/enrich-albums.js` обходит все альбомы в БД и запрашивает данные из MusicBrainz API.
 - Для каждого альбома ищет релиз по исполнителю и названию, предпочитая формат «12" Vinyl».
 - Дополняет БД полями: `label`, `country`, `vinylFormat`, `barcode`, `mbid`.
 - Соблюдает rate-limit: задержка 1200 мс между запросами.
+
+### Обогащение аудио — iTunes (`npm run enrich:audio`)
+
+- Скрипт `server/scripts/enrich-audio.js` обходит все альбомы, у которых `audioUrl` пустой или содержит placeholder-путь вида `/audio/...`.
+- Для каждого такого альбома запрашивает iTunes Search API (`media=music&entity=song`) и берёт первый результат с `previewUrl`.
+- Сохраняет прямой CDN-URL 30-секундного превью (формат AAC/M4A).
+- Не трогает альбомы с уже заполненным `https://` URL.
+- Задержка 400 мс между запросами; API ключ не требуется.
+
+### Обогащение метаданных — Discogs (через Admin Panel)
+
+- Прокси-маршрут `GET /api/discogs/release/:id` защищён admin-токеном; запрос идёт с сервера → нет проблем с CORS.
+- Используется кнопкой «↓ Fetch data» в форме создания/редактирования альбома.
+- Опционально: переменная `DISCOGS_TOKEN` в `server/.env` повышает лимит с 25 до 60 запросов в минуту.
+- Токен регистрируется бесплатно на discogs.com/settings/developers.
 
 ### API contract-тесты (`npm test` — сервер)
 

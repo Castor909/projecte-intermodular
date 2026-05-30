@@ -6,6 +6,7 @@ const { seedAlbums } = require('./seed/seedAlbums');
 const albumsRouter = require('./routes/albums');
 const adminRouter = require('./routes/admin');
 const discogsRouter = require('./routes/discogs');
+const itunesRouter = require('./routes/itunes');
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/images', express.static(path.join(__dirname, '../client/src/assets/ima
 app.use('/api/albums', albumsRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/discogs', discogsRouter);
+app.use('/api/itunes', itunesRouter);
 
 // Test route to show that the API is working
 app.get('/', (req, res) => {
