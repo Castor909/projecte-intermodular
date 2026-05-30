@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const { connectDatabase } = require('./config/db');
 const { seedAlbums } = require('./seed/seedAlbums');
 const albumsRouter = require('./routes/albums');
+const adminRouter = require('./routes/admin');
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/images', express.static(path.join(__dirname, '../client/src/assets/ima
 
 // API routes
 app.use('/api/albums', albumsRouter);
+app.use('/api/admin', adminRouter);
 
 // Test route to show that the API is working
 app.get('/', (req, res) => {
