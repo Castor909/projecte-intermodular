@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fetchDiscogsRelease } from '../api/admin';
 
 const EMPTY_FORM = {
   title: '',
@@ -42,6 +43,52 @@ function toTracksValues(album) {
   return album.tracks.map((t) => ({ title: t.title || '', duration: t.duration || '' }));
 }
 
+// Maps a raw Discogs release object to form fields + tracks.
+function mapDiscogs(data) {
+  const rawArtist = data.artists?.[0]?.name || '';
+  // Discogs disambiguates with "(2)" suffix or trailing "*" — strip both.
+  const artist = rawArtist.replace(/\s*\(\d+\)$/, '').replace(/\s*\*$/, '').trim();
+
+  // Prefer styles (more specific) over genres
+  const genre = data.styles?.[0] || data.genres?.[0] || '';
+
+  // Build vinyl format string, e.g. "Vinyl, LP, Album"
+  const fmt = data.formats?.find((f) => f.name === 'Vinyl') || data.formats?.[0];
+  const vinylFormat = fmt
+    ? [fmt.name, ...(fmt.descriptions || [])].filter(Boolean).join(', ')
+    : '';
+
+  const barcodeEntry = data.identifiers?.find((i) => i.type === 'Barcode');
+  const barcode = barcodeEntry?.value?.trim() || '';
+
+  // Only real tracks (skip side headings / index entries)
+  const tracks = (data.tracklist || [])
+    .filter((t) => t.type_ === 'track')
+    .map((t) => ({ title: t.title || '', duration: t.duration || '' }));
+
+  // First image from Discogs CDN
+  const coverUrl = data.images?.[0]?.uri || '';
+
+  const formData = {};
+  const filled = [];
+
+  if (data.title) { formData.title = data.title; filled.push('title'); }
+  if (artist) { formData.artist = artist; filled.push('artist'); }
+  if (data.year) { formData.year = String(data.year); filled.push('year'); }
+  if (genre) { formData.genre = genre; filled.push('genre'); }
+  if (coverUrl) { formData.coverUrl = coverUrl; filled.push('cover'); }
+  if (data.labels?.[0]?.name) { formData.label = data.labels[0].name; filled.push('label'); }
+  if (data.country) { formData.country = data.country; filled.push('country'); }
+  if (vinylFormat) { formData.vinylFormat = vinylFormat; filled.push('format'); }
+  if (barcode) { formData.barcode = barcode; filled.push('barcode'); }
+
+  const filledSummary = tracks.length > 0
+    ? [...filled, `tracklist (${tracks.length} tracks)`]
+    : filled;
+
+  return { formData, tracks: tracks.length > 0 ? tracks : null, filledSummary };
+}
+
 function validate(form) {
   const errs = {};
   if (!form.title.trim()) errs.title = 'Required';
@@ -63,6 +110,39 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
   const [tracks, setTracks] = useState(() => toTracksValues(initialAlbum));
   const [errors, setErrors] = useState({});
   const [coverError, setCoverError] = useState(false);
+
+  // Discogs autofill state
+  const [discogsId, setDiscogsId] = useState('');
+  const [fetchingDiscogs, setFetchingDiscogs] = useState(false);
+  const [discogsResult, setDiscogsResult] = useState(null); // { ok, message }
+
+  async function fetchFromDiscogs() {
+    const id = discogsId.trim();
+    if (!id) return;
+    setFetchingDiscogs(true);
+    setDiscogsResult(null);
+    try {
+      const data = await fetchDiscogsRelease(id);
+      const { formData, tracks: newTracks, filledSummary } = mapDiscogs(data);
+      setForm((prev) => ({ ...prev, ...formData }));
+      if (newTracks) setTracks(newTracks);
+      setCoverError(false);
+      // Clear validation errors for fields that were just filled
+      setErrors((prev) => {
+        const next = { ...prev };
+        Object.keys(formData).forEach((k) => delete next[k]);
+        return next;
+      });
+      setDiscogsResult({
+        ok: true,
+        message: `Filled: ${filledSummary.join(', ')}`,
+      });
+    } catch (err) {
+      setDiscogsResult({ ok: false, message: err.message });
+    } finally {
+      setFetchingDiscogs(false);
+    }
+  }
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -126,7 +206,43 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
 
       {saveError && <p className="notice warning">{saveError}</p>}
 
-      {/* Basic Info */}
+      {/* ── Discogs autofill ── */}
+      <section className="admin-form__section admin-discogs-section">
+        <h3>
+          Auto-fill from Discogs
+          <span className="admin-section-hint"> — optional shortcut</span>
+        </h3>
+        <p className="admin-discogs-hint">
+          Enter the numeric release ID from the Discogs URL:
+          discogs.com/release/<strong>249504</strong>
+        </p>
+        <div className="admin-discogs-row">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={discogsId}
+            onChange={(e) => { setDiscogsId(e.target.value); setDiscogsResult(null); }}
+            placeholder="e.g. 249504"
+            className="admin-discogs-input"
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), fetchFromDiscogs())}
+          />
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={fetchFromDiscogs}
+            disabled={!discogsId.trim() || fetchingDiscogs}
+          >
+            {fetchingDiscogs ? 'Fetching…' : '↓ Fetch data'}
+          </button>
+        </div>
+        {discogsResult && (
+          <p className={`notice ${discogsResult.ok ? 'success' : 'warning'}`} style={{ marginTop: 10 }}>
+            {discogsResult.message}
+          </p>
+        )}
+      </section>
+
+      {/* ── Basic Info ── */}
       <section className="admin-form__section">
         <h3>Basic Info</h3>
         <div className="admin-form__row">
@@ -176,7 +292,7 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
         </div>
       </section>
 
-      {/* Media */}
+      {/* ── Media ── */}
       <section className="admin-form__section">
         <h3>Media</h3>
         <div className="admin-form__cover-row">
@@ -200,7 +316,7 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
         </div>
       </section>
 
-      {/* Vinyl Specs */}
+      {/* ── Vinyl Specs ── */}
       <section className="admin-form__section">
         <h3>Vinyl Specs <span className="admin-section-hint">(optional)</span></h3>
         <div className="admin-form__row admin-form__row--4">
@@ -223,7 +339,7 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
         </div>
       </section>
 
-      {/* Tracklist */}
+      {/* ── Tracklist ── */}
       <section className="admin-form__section">
         <h3>Tracklist <span className="admin-section-hint">(optional)</span></h3>
         {tracks.map((track, i) => (
@@ -261,7 +377,7 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
           Cancel
         </button>
         <button type="submit" className="btn-connect" disabled={saving} style={{ padding: '12px 28px' }}>
-          {saving ? 'Saving...' : (isEditing ? 'Save changes' : 'Add Album')}
+          {saving ? 'Saving…' : (isEditing ? 'Save changes' : 'Add Album')}
         </button>
       </div>
     </form>

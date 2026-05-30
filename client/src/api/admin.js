@@ -58,6 +58,17 @@ export async function updateAlbum(id, albumData) {
   return res.json();
 }
 
+export async function fetchDiscogsRelease(releaseId) {
+  const res = await fetch(`/api/discogs/release/${releaseId}`, {
+    headers: { 'x-admin-token': getToken() },
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Failed to fetch from Discogs');
+  }
+  return res.json();
+}
+
 export async function deleteAlbum(id) {
   const res = await fetch(`/api/albums/${id}`, {
     method: 'DELETE',
