@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import FeaturedAlbum from '../components/FeaturedAlbum';
 import SpecialOffers from '../components/SpecialOffers';
 import AlbumCard from '../components/AlbumCard';
+import { SkeletonCard } from '../components/SkeletonCard';
 import { fetchAlbums } from '../api/albums';
+import { useDebounce } from '../useDebounce';
 
 function sortAlbums(albums, sortMode) {
   const sorted = [...albums];
@@ -45,6 +47,8 @@ function CatalogPage() {
   const [genreFilter, setGenreFilter] = useState('all');
   const [sortMode, setSortMode] = useState('featured');
 
+  const debouncedSearch = useDebounce(searchTerm, 250);
+
   useEffect(() => {
     fetchAlbums()
       .then((data) => {
@@ -62,26 +66,37 @@ function CatalogPage() {
       });
   }, []);
 
+  if (loading) {
+    return (
+      <section className="catalog-toolbar-section">
+        <div className="catalog-summary">
+          <h2>New Arrivals</h2>
+        </div>
+        <div className="catalog-grid">
+          {Array.from({ length: 8 }, (_, i) => <SkeletonCard key={i} />)}
+        </div>
+      </section>
+    );
+  }
+
+  if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
+  if (albums.length === 0) return <div style={{ padding: 40 }}>No albums found.</div>;
+
   const genres = [...new Set(albums.map((album) => album.genre))].sort((a, b) => a.localeCompare(b));
 
   const visibleAlbums = sortAlbums(
     albums.filter((album) => {
-      const normalizedSearch = searchTerm.trim().toLowerCase();
+      const normalizedSearch = debouncedSearch.trim().toLowerCase();
       const matchesSearch =
         normalizedSearch.length === 0 ||
         [album.title, album.artist, album.genre]
           .filter(Boolean)
           .some((field) => field.toLowerCase().includes(normalizedSearch));
       const matchesGenre = genreFilter === 'all' || album.genre === genreFilter;
-
       return matchesSearch && matchesGenre;
     }),
     sortMode
   );
-
-  if (loading) return <div style={{ padding: 40 }}>Loading albums...</div>;
-  if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
-  if (albums.length === 0) return <div style={{ padding: 40 }}>No albums found.</div>;
 
   return (
     <>

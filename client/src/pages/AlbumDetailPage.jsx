@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchAlbumById } from '../api/albums';
 import AudioPlayer from '../components/AudioPlayer';
+import { SkeletonDetail } from '../components/SkeletonCard';
 
 function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   const { id } = useParams();
@@ -36,7 +37,7 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
 
   const isOutOfStock = Number.isFinite(album?.stock) && album.stock <= 0;
 
-  if (loading) return <div style={{ padding: 40 }}>Loading album...</div>;
+  if (loading) return <div style={{ padding: 40 }}><SkeletonDetail /></div>;
   if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
   if (!album) return <div style={{ padding: 40 }}>Album not found.</div>;
 

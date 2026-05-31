@@ -13,6 +13,8 @@ function AdminPage() {
   const [editTarget, setEditTarget] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [adminSearch, setAdminSearch] = useState('');
+  const [adminGenre, setAdminGenre] = useState('all');
 
   const loadAlbums = useCallback(() => {
     setLoading(true);
@@ -96,6 +98,15 @@ function AdminPage() {
     }
   }
 
+  const visibleAlbums = albums.filter((album) => {
+    const q = adminSearch.trim().toLowerCase();
+    const matchesSearch = !q ||
+      album.title?.toLowerCase().includes(q) ||
+      album.artist?.toLowerCase().includes(q);
+    const matchesGenre = adminGenre === 'all' || album.genre === adminGenre;
+    return matchesSearch && matchesGenre;
+  });
+
   return (
     <div className="admin-page">
       <div className="admin-header">
@@ -127,9 +138,35 @@ function AdminPage() {
         ) : (
           <>
             <div className="admin-list-header">
-              <h2 style={{ margin: 0 }}>Albums ({albums.length})</h2>
+              <h2 style={{ margin: 0 }}>
+                Albums ({adminSearch || adminGenre !== 'all'
+                  ? `${visibleAlbums.length} of ${albums.length}`
+                  : albums.length})
+              </h2>
               <button className="btn-connect" onClick={handleCreate}>+ Add Album</button>
             </div>
+
+            {!loading && !fetchError && albums.length > 0 && (
+              <div className="admin-filter-bar">
+                <input
+                  type="search"
+                  value={adminSearch}
+                  onChange={(e) => setAdminSearch(e.target.value)}
+                  placeholder="Search by title or artist…"
+                  className="admin-filter-search"
+                />
+                <select
+                  value={adminGenre}
+                  onChange={(e) => setAdminGenre(e.target.value)}
+                  className="admin-filter-genre"
+                >
+                  <option value="all">All genres</option>
+                  {[...new Set(albums.map((a) => a.genre).filter(Boolean))].sort().map((g) => (
+                    <option key={g} value={g}>{g}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {loading && <p>Loading albums...</p>}
             {fetchError && <p className="notice warning">{fetchError}</p>}
@@ -151,7 +188,7 @@ function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {albums.map((album) => (
+                    {visibleAlbums.map((album) => (
                       <tr key={album._id}>
                         <td>
                           <img
