@@ -22,6 +22,9 @@ const path = require('path');
 // Serve album cover images from client assets so coverUrl '/images/...' resolves
 app.use('/images', express.static(path.join(__dirname, '../client/src/assets/images')));
 
+// Serve covers downloaded from Navidrome during import
+app.use('/covers', express.static(path.join(__dirname, 'public/covers')));
+
 // API routes
 app.use('/api/albums', albumsRouter);
 app.use('/api/admin', adminRouter);

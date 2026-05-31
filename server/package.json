@@ -9,7 +9,8 @@
     "test": "node scripts/api-contract-check.js",
     "test:contracts": "node scripts/api-contract-check.js",
     "enrich": "node scripts/enrich-albums.js",
-    "enrich:audio": "node scripts/enrich-audio.js"
+    "enrich:audio": "node scripts/enrich-audio.js",
+    "import:navidrome": "node scripts/import-navidrome.js"
   },
   "keywords": [],
   "author": "",
