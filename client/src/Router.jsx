@@ -7,6 +7,8 @@ import ShippingPage from './pages/ShippingPage';
 import PaymentPage from './pages/PaymentPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Header from './components/Header';
 import { useCart } from './useCart';
 
@@ -60,6 +62,8 @@ function Router() {
         />
         <Route path="/checkout/shipping" element={<ShippingPage />} />
         <Route path="/checkout/payment" element={<PaymentPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

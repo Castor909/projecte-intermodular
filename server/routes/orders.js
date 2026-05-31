@@ -1,0 +1,54 @@
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const Album = require('../models/Album');
+const Order = require('../models/Order');
+const requireAuth = require('../middleware/requireAuth');
+
+const router = express.Router();
+
+// POST /api/orders — confirm payment, decrement stock, save order
+router.post('/', async (req, res, next) => {
+  const { txHash, items, shippingAddress } = req.body;
+
+  if (!txHash || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ message: 'txHash and items are required' });
+  }
+
+  // Optionally associate with logged-in user (token not required)
+  let userId = null;
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    try {
+      const payload = jwt.verify(authHeader.slice(7), process.env.JWT_SECRET);
+      userId = payload.userId;
+    } catch { /* anonymous order is fine */ }
+  }
+
+  try {
+    // Decrement stock for each item — floor at 0
+    for (const item of items) {
+      await Album.findByIdAndUpdate(item.albumId, [
+        { $set: { stock: { $max: [0, { $subtract: ['$stock', item.qty] }] } } },
+      ]);
+    }
+
+    const totalEth = items.reduce((sum, i) => sum + i.priceEth * i.qty, 0);
+
+    const order = await Order.create({ txHash, items, totalEth, shippingAddress, userId });
+    res.status(201).json(order);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/orders/mine — order history for logged-in user
+router.get('/mine', requireAuth, async (req, res, next) => {
+  try {
+    const orders = await Order.find({ userId: req.userId }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    next(err);
+  }
+});
+
+module.exports = router;

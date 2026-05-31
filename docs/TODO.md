@@ -4,26 +4,6 @@
 
 ---
 
-## 🔴 Высокий приоритет
-
-### BK-09 — User Registration & Auth
-Полноценная система авторизации пользователей.
-- Коллекция `User` в MongoDB (email, passwordHash, savedAddress)
-- `POST /api/auth/register` — регистрация
-- `POST /api/auth/login` — вход, возвращает JWT
-- Middleware `requireAuth` для защищённых маршрутов
-- Страницы `/register` и `/login` на фронтенде
-- Адрес доставки подтягивается из профиля автоматически
-- Кнопка «Log out» в Header
-
-### Авто-декремент стока после оплаты
-Сейчас сток не меняется после успешной транзакции MetaMask.
-- На экране успеха (`txState === 'submitted'`) вызывать `PATCH /api/orders/confirm`
-- Сервер уменьшает `stock` для каждого товара из корзины
-- Если сток упал до 0 — товар помечается как out of stock
-
----
-
 ## 🟡 Средний приоритет
 
 ### Расширить каталог (seed)
@@ -51,6 +31,12 @@
 - Special Offers показывает альбомы у которых `discountPercent > 0`
 - На карточке — зачёркнутая старая цена и новая
 
+### История заказов
+Страница `/orders` с транзакциями пользователя.
+- Инфраструктура готова: коллекция `Order` уже существует, `GET /api/orders/mine` реализован
+- Нужна только страница `/orders` на фронтенде
+- Показывать список с датой, суммой, товарами и ссылкой на Etherscan
+
 ---
 
 ## 🟢 Низкий приоритет
@@ -71,12 +57,6 @@
 - Кнопка «Import» → фетч данных → создание записи → появление в таблице
 - Сохраняет price/stock по дефолту (0 / 0), редактировать потом
 
-### История заказов
-Страница `/orders` с транзакциями пользователя.
-- Требует BK-09 (авторизация)
-- Хранить `{ txHash, items, total, date }` в коллекции `Order`
-- Показывать список с датой, суммой и ссылкой на Etherscan
-
 ### Скелетоны загрузки
 Вместо текста «Loading albums...» — анимированные placeholder-карточки.
 - Компонент `SkeletonCard` (серые прямоугольники с shimmer-анимацией)
@@ -89,12 +69,14 @@
 - BK-01 Environment Setup
 - BK-02 Database Design
 - BK-03 Home Page (каталог, поиск, фильтр, сортировка)
-- BK-04 Product Detail Page (инфо, трекбист, vinyl specs)
+- BK-04 Product Detail Page (инфо, трекбист, vinyl specs, аудиоплеер)
 - BK-05 Shopping Cart (add/remove/qty/persist)
 - BK-06 Payment Gateway — MetaMask ETH
-- BK-07 Audio Player (preview, seek, timer)
-- BK-08 Shipping Form (валидация, persist)
+- BK-07 Audio Player (preview, seek, timer, cleanup on unmount)
+- BK-08 Shipping Form (валидация, persist в localStorage + профиле)
+- BK-09 User Registration & Auth (JWT, bcrypt, профиль, адрес)
 - BK-11 Discogs API Integration (автофилл в Admin Panel)
 - BK-12 Admin Panel (CRUD альбомов, пароль, защита маршрута)
+- Авто-декремент стока после оплаты (POST /api/orders, max(0, stock-qty))
 - iTunes enrich:audio — скрипт и кнопка в Admin Panel
 - MusicBrainz enrich — скрипт обогащения vinyl specs

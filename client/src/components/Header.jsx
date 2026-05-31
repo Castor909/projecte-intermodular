@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../useAuth';
 
 function Header() {
+  const { user, logout } = useAuth();
   const [walletState, setWalletState] = useState('idle');
   const [walletAddress, setWalletAddress] = useState('');
   const [walletError, setWalletError] = useState('');
@@ -124,6 +126,19 @@ function Header() {
         <a href="#">About</a>
         <a href="#">Contact</a>
       </nav>
+      <div className="auth-box">
+        {user ? (
+          <>
+            <span className="auth-email">{user.email}</span>
+            <button className="btn-secondary auth-btn" onClick={logout}>Log out</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="auth-link">Log in</Link>
+            <Link to="/register" className="btn-connect auth-btn">Register</Link>
+          </>
+        )}
+      </div>
       <div className="wallet-box">
         {isConnected ? (
           <>

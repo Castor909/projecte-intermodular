@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../useCart';
+import { useAuth } from '../useAuth';
+import { confirmOrder } from '../api/auth';
 import { STORE_WALLET } from '../config/payment';
 
 const SHIPPING_KEY = 'vinyleth_shipping';
@@ -29,6 +31,7 @@ function isValidAddress(addr) {
 function PaymentPage() {
   const navigate = useNavigate();
   const { cart, clearCart } = useCart();
+  const { token } = useAuth();
   const [shipping] = useState(loadShipping);
   const [txState, setTxState] = useState('idle'); // idle | waiting | submitted | error
   const [txHash, setTxHash] = useState('');
@@ -80,6 +83,20 @@ function PaymentPage() {
 
       setTxHash(hash);
       setTxState('submitted');
+
+      // Decrement stock and save order (best-effort, non-blocking)
+      confirmOrder(token, {
+        txHash: hash,
+        items: cart.map((item) => ({
+          albumId: item._id,
+          title: item.title,
+          artist: item.artist,
+          qty: item.qty,
+          priceEth: item.priceEth,
+        })),
+        shippingAddress: shipping,
+      }).catch(() => {});
+
       clearCart();
     } catch (err) {
       setErrorMsg(err.code === 4001 ? 'Transaction rejected.' : (err.message || 'Transaction failed.'));

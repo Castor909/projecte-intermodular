@@ -24,6 +24,8 @@
 | `/cart` | Корзина | Публичный |
 | `/checkout/shipping` | Форма доставки | Публичный |
 | `/checkout/payment` | Оплата | Публичный |
+| `/login` | Вход пользователя | Публичный |
+| `/register` | Регистрация пользователя | Публичный |
 | `/admin/login` | Вход в панель администратора | Публичный |
 | `/admin` | Панель администратора | Только авторизованный admin |
 
@@ -162,6 +164,11 @@
 - Сумма конвертируется из ETH в wei через `BigInt` (без потери точности из-за float).
 - Транзакция отправляется на кошелёк магазина (`STORE_WALLET` из `config/payment.js`).
 
+**Авто-декремент стока после оплаты**
+- После получения `txHash` от MetaMask клиент вызывает `POST /api/orders` (best-effort, не блокирует экран успеха).
+- Сервер уменьшает `stock` для каждого купленного альбома по формуле `max(0, stock − qty)`.
+- Заказ сохраняется в коллекции `Order` с привязкой к пользователю (если залогинен).
+
 **Состояния кнопки оплаты**
 - `idle` — «Pay now»
 - `waiting` — «Waiting for MetaMask...» (кнопка заблокирована)
@@ -182,7 +189,37 @@
 
 ---
 
-### 6. Шапка сайта (Header)
+### 6. Авторизация пользователей
+
+**Регистрация (`/register`)**
+- Поля: Email, Password (мин. 6 символов), Confirm password.
+- Клиентская валидация: формат email, длина пароля, совпадение паролей.
+- При успехе — JWT выдаётся сразу, пользователь переходит на главную уже залогиненным.
+- Дублирующий email → сообщение об ошибке от сервера.
+
+**Вход (`/login`)**
+- Поля: Email, Password.
+- При неверных данных — единое сообщение «Invalid email or password» (без подсказки какое поле неверно).
+- JWT и данные пользователя сохраняются в `localStorage` (`auth_token`, `auth_user`).
+- Токен действителен 7 дней.
+
+**Шапка — auth-блок**
+- Незалогиненный: ссылки «Log in» и кнопка «Register».
+- Залогиненный: email пользователя (усечённый) и кнопка «Log out».
+- Logout очищает `localStorage` и сбрасывает состояние контекста.
+
+**Форма доставки — интеграция с профилем**
+- Если у пользователя есть сохранённый адрес — форма предзаполняется из профиля (приоритет над `localStorage`).
+- После отправки формы адрес автоматически сохраняется в профиле через `PUT /api/auth/address`.
+
+**Контекст авторизации (`AuthContext`)**
+- Оборачивает всё приложение (выше `CartProvider`).
+- Хранит `token`, `user`, методы `login / logout / updateUser`.
+- Данные загружаются синхронно из `localStorage` при старте.
+
+---
+
+### 7. Шапка сайта (Header)
 
 **Логотип и навигация**
 - Логотип «VinylEth».
@@ -198,7 +235,7 @@
 
 ---
 
-### 7. Панель администратора (`/admin`)
+### 8. Панель администратора (`/admin`)
 
 **Вход (`/admin/login`)**
 - Форма с полем пароля; пароль задаётся в `server/.env` (`ADMIN_PASSWORD`).
@@ -269,6 +306,12 @@
 | PUT | `/api/albums/:id` | Admin | Обновить альбом |
 | DELETE | `/api/albums/:id` | Admin | Удалить альбом |
 | POST | `/api/admin/login` | — | Вход администратора, возвращает токен |
+| POST | `/api/auth/register` | — | Регистрация пользователя, возвращает JWT |
+| POST | `/api/auth/login` | — | Вход пользователя, возвращает JWT |
+| GET | `/api/auth/me` | User JWT | Данные текущего пользователя |
+| PUT | `/api/auth/address` | User JWT | Сохранить адрес доставки в профиле |
+| POST | `/api/orders` | Опционально | Подтвердить заказ, декрементировать сток |
+| GET | `/api/orders/mine` | User JWT | История заказов пользователя |
 | GET | `/api/discogs/release/:id` | Admin | Прокси к Discogs API — метаданные релиза |
 | GET | `/api/itunes/preview` | Admin | Прокси к iTunes Search API — URL аудиопревью |
 
@@ -276,6 +319,11 @@
 - Middleware `requireAdmin` проверяет заголовок `x-admin-token`.
 - Токен сравнивается с `ADMIN_PASSWORD` из `server/.env`.
 - При несовпадении — `401 Unauthorized`.
+
+**Авторизация user-маршрутов**
+- Middleware `requireAuth` проверяет заголовок `Authorization: Bearer <jwt>`.
+- JWT подписан `JWT_SECRET` из `server/.env`, срок — 7 дней.
+- При невалидном или истёкшем токене — `401 Unauthorized`.
 
 **Ответы на ошибки**
 - `400 Bad Request` — невалидный формат id (`Invalid album id format`)
@@ -303,6 +351,24 @@
 | `vinylFormat` | String | Формат: «Vinyl, LP, Album» и др. (от Discogs / MusicBrainz) |
 | `barcode` | String | Штрихкод (от Discogs / MusicBrainz) |
 | `mbid` | String | MusicBrainz Release ID |
+
+### Модель данных (User)
+
+| Поле | Тип | Описание |
+|---|---|---|
+| `email` | String | Уникальный email (lowercase) |
+| `passwordHash` | String | bcrypt-хэш пароля (10 rounds) |
+| `savedAddress` | Object | Сохранённый адрес доставки `{fullName, address, city, postalCode, country}` |
+
+### Модель данных (Order)
+
+| Поле | Тип | Описание |
+|---|---|---|
+| `txHash` | String | Хэш Ethereum-транзакции |
+| `items` | Array | `[{albumId, title, artist, qty, priceEth}]` |
+| `totalEth` | Number | Итоговая сумма в ETH |
+| `shippingAddress` | Object | Адрес доставки на момент покупки |
+| `userId` | ObjectId | Ссылка на User (null для анонимных заказов) |
 
 ### Автосид (seed)
 

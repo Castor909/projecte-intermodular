@@ -7,6 +7,8 @@ const albumsRouter = require('./routes/albums');
 const adminRouter = require('./routes/admin');
 const discogsRouter = require('./routes/discogs');
 const itunesRouter = require('./routes/itunes');
+const authRouter = require('./routes/auth');
+const ordersRouter = require('./routes/orders');
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use('/api/albums', albumsRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/discogs', discogsRouter);
 app.use('/api/itunes', itunesRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/orders', ordersRouter);
 
 // Test route to show that the API is working
 app.get('/', (req, res) => {

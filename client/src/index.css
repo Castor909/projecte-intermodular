@@ -614,6 +614,91 @@ nav a {
   margin-left: 16px;
 }
 
+/* ===== Auth ===== */
+
+.auth-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.auth-email {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-link {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  color: var(--accent-color);
+}
+
+.auth-btn {
+  font-size: 0.85rem !important;
+  padding: 7px 14px !important;
+}
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  padding: 40px 20px;
+}
+
+.auth-box-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(62, 39, 35, 0.15);
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  margin: 0 0 28px;
+  text-align: center;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.auth-switch a {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.shipping-profile-hint {
+  font-size: 0.82rem;
+  color: #1d6b3b;
+  margin: -12px 0 16px;
+  opacity: 0.85;
+}
+
+@media (max-width: 780px) {
+  .auth-box {
+    flex-wrap: wrap;
+  }
+  .auth-email {
+    max-width: 120px;
+  }
+}
+
 /* ===== Audio Player ===== */
 
 .audio-player {
