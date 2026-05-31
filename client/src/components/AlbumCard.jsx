@@ -4,6 +4,11 @@ import StockBadge from './StockBadge';
 
 function AlbumCard({ album }) {
   const navigate = useNavigate();
+  const hasDiscount = Number.isFinite(album.discountPercent) && album.discountPercent > 0;
+  const discountedEth = hasDiscount
+    ? (album.priceEth * (1 - album.discountPercent / 100)).toFixed(3)
+    : null;
+
   return (
     <div className="album-card">
       <div className="album-card__cover-wrap">
@@ -12,8 +17,20 @@ function AlbumCard({ album }) {
       </div>
       <h3>{album.title}</h3>
       <p>{album.artist}</p>
-      <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.price}</p>
-      <button className="btn-connect" style={{ width: '100%' }} onClick={() => navigate(`/album/${album._id || album.id}`)}>
+      {hasDiscount ? (
+        <div className="album-card__pricing">
+          <span className="album-card__original">{album.priceEth} ETH</span>
+          <span className="album-card__discounted">{discountedEth} ETH</span>
+          <span className="album-card__discount-badge">−{album.discountPercent}%</span>
+        </div>
+      ) : (
+        <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.price}</p>
+      )}
+      <button
+        className="btn-connect"
+        style={{ width: '100%' }}
+        onClick={() => navigate(`/album/${album._id || album.id}`)}
+      >
         View
       </button>
     </div>

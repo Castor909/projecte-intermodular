@@ -62,6 +62,12 @@ const albumSchema = new mongoose.Schema(
     vinylFormat: { type: String, trim: true },
     barcode: { type: String, trim: true },
     mbid: { type: String, trim: true },
+    discountPercent: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
+    },
   },
   {
     timestamps: true,

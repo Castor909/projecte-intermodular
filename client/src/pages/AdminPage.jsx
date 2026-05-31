@@ -145,6 +145,7 @@ function AdminPage() {
                       <th>Genre</th>
                       <th>Price (ETH)</th>
                       <th>Stock</th>
+                      <th>Discount</th>
                       <th>Featured</th>
                       <th>Actions</th>
                     </tr>
@@ -164,6 +165,9 @@ function AdminPage() {
                         <td>{album.genre}</td>
                         <td>{album.priceEth}</td>
                         <td>{album.stock}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {album.discountPercent > 0 ? `${album.discountPercent}%` : '—'}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{album.featured ? '✓' : '—'}</td>
                         <td className="admin-table-actions">
                           <button

@@ -614,6 +614,151 @@ nav a {
   margin-left: 16px;
 }
 
+/* ===== Discounted pricing ===== */
+
+.album-card__pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.album-card__original {
+  text-decoration: line-through;
+  opacity: 0.45;
+  font-size: 0.85rem;
+}
+
+.album-card__discounted {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.album-card__discount-badge {
+  font-size: 0.7rem;
+  font-weight: bold;
+  background: var(--accent-color);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.special-offer-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.special-offer-original {
+  text-decoration: line-through;
+  opacity: 0.4;
+  font-size: 0.8rem;
+}
+
+/* ===== Orders page ===== */
+
+.orders-page {
+  padding: 40px;
+  max-width: 700px;
+}
+
+.orders-page h2 {
+  margin: 0 0 28px;
+}
+
+.orders-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.orders-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(62, 39, 35, 0.12);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.order-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.order-card__date {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.order-card__total {
+  font-weight: bold;
+  font-size: 1.05rem;
+  color: var(--accent-color);
+}
+
+.order-card__tx {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 0.82rem;
+}
+
+.order-card__tx-label {
+  opacity: 0.45;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-card__tx-link {
+  color: var(--accent-color);
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.order-card__items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+  border-top: 1px solid rgba(62, 39, 35, 0.1);
+  padding-top: 10px;
+}
+
+.order-card__item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(62, 39, 35, 0.06);
+}
+
+.order-card__address {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+  .orders-page {
+    padding: 24px 20px;
+  }
+}
+
 /* ===== 404 ===== */
 
 .not-found-page {

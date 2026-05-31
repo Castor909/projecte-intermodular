@@ -129,6 +129,7 @@ function Header() {
       <div className="auth-box">
         {user ? (
           <>
+            <Link to="/orders" className="auth-link">My orders</Link>
             <span className="auth-email">{user.email}</span>
             <button className="btn-secondary auth-btn" onClick={logout}>Log out</button>
           </>

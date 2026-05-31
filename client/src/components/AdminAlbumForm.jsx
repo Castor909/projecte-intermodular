@@ -9,6 +9,7 @@ const EMPTY_FORM = {
   priceEth: '',
   coverUrl: '',
   stock: '',
+  discountPercent: '0',
   description: '',
   featured: false,
   audioUrl: '',
@@ -28,6 +29,7 @@ function toFormValues(album) {
     priceEth: album.priceEth !== undefined ? String(album.priceEth) : '',
     coverUrl: album.coverUrl || '',
     stock: album.stock !== undefined ? String(album.stock) : '',
+    discountPercent: album.discountPercent !== undefined ? String(album.discountPercent) : '0',
     description: album.description || '',
     featured: album.featured || false,
     audioUrl: album.audioUrl || '',
@@ -199,6 +201,7 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
       stock: Number(form.stock),
       description: form.description.trim(),
       featured: form.featured,
+      discountPercent: Number(form.discountPercent) || 0,
     };
 
     if (form.audioUrl.trim()) payload.audioUrl = form.audioUrl.trim();
@@ -297,10 +300,25 @@ function AdminAlbumForm({ initialAlbum, onSave, onCancel, saving, saveError }) {
             {errors.stock && <span className="field-error">{errors.stock}</span>}
           </div>
         </div>
+        <div className="admin-form__row">
+          <div className="form-field">
+            <label>Discount (%)</label>
+            <input
+              name="discountPercent"
+              type="number"
+              min="0"
+              max="100"
+              value={form.discountPercent}
+              onChange={handleChange}
+              placeholder="0 = no discount"
+            />
+            <small style={{ opacity: 0.55 }}>Albums with discount &gt; 0 appear in Special Offers</small>
+          </div>
+        </div>
         <div className="form-field">
           <label className="admin-checkbox-label">
             <input name="featured" type="checkbox" checked={form.featured} onChange={handleChange} />
-            Featured (appears in Special Offers)
+            Featured (pinned first in sort order)
           </label>
         </div>
         <div className="form-field" style={{ marginTop: 12 }}>
