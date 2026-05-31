@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import StockBadge from './StockBadge';
 
 function SpecialOffers({ albums }) {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function SpecialOffers({ albums }) {
             <div className="special-offer-info">
               <p className="special-offer-artist">{album.artist}</p>
               <h3 className="special-offer-name">{album.title}</h3>
+              <StockBadge stock={album.stock} />
               <p className="special-offer-price">{album.price}</p>
               <button
                 className="btn-connect"

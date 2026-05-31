@@ -13,16 +13,6 @@
 - Несколько альбомов с `stock: 0` (out of stock) и `stock: 1–2` (low stock)
 - Несколько с `featured: true` для секции Special Offers
 
-### Страница 404
-Сейчас несуществующий маршрут рендерит пустой экран.
-- Компонент `NotFoundPage` с сообщением и кнопкой «← Back to catalog»
-- Добавить `<Route path="*">` в Router.jsx
-
-### Бейджи стока на карточках
-Визуальная подсказка о наличии прямо в каталоге.
-- `stock === 0` → бейдж «Out of stock» (серый)
-- `stock <= 2` → бейдж «Last copies» (оранжевый)
-- Отображается на `AlbumCard` и в `SpecialOffers`
 
 ### BK-10 — Special Offers: реальные скидки
 Сейчас секция показывает альбомы по флагу `featured`, а не по скидке.
@@ -90,3 +80,5 @@
 - iTunes enrich:audio — скрипт и кнопка в Admin Panel
 - MusicBrainz enrich — скрипт обогащения vinyl specs
 - Navidrome import — скрипт импорта каталога через Subsonic API
+- Страница 404 с сообщением и кнопкой возврата
+- Бейджи стока «Out of stock» / «Last copies» на AlbumCard и SpecialOffers
