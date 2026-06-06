@@ -332,6 +332,7 @@ function AdminPage() {
                             src={album.coverUrl}
                             alt={album.title}
                             className="admin-table-cover"
+                            loading="lazy"
                           />
                         </td>
                         <td className="admin-table-title">{album.title}</td>

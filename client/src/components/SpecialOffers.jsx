@@ -24,7 +24,7 @@ function SpecialOffers() {
           return (
             <div key={album._id || album.id} className="special-offer-card">
               <span className="special-offer-badge">−{album.discountPercent}%</span>
-              <img src={album.coverUrl || album.cover} alt={album.title} className="special-offer-cover" />
+              <img src={album.coverUrl || album.cover} alt={album.title} className="special-offer-cover" loading="lazy" />
               <div className="special-offer-info">
                 <p className="special-offer-artist">{album.artist}</p>
                 <h3 className="special-offer-name">{album.title}</h3>

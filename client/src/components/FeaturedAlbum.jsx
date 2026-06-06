@@ -22,7 +22,7 @@ function FeaturedAlbum() {
       <h1>Album of the week</h1>
       <p>Rediscover the classics through the blockchain.</p>
       <div className="featured-album">
-        <img src={album.coverUrl || album.cover} alt={album.title} className="featured-cover" />
+        <img src={album.coverUrl || album.cover} alt={album.title} className="featured-cover" loading="eager" />
         <div className="featured-info">
           <h2>{album.title}</h2>
           <p className="featured-artist">{album.artist}</p>

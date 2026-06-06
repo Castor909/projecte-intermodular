@@ -12,7 +12,7 @@ function AlbumCard({ album }) {
   return (
     <div className="album-card">
       <div className="album-card__cover-wrap">
-        <img src={album.cover} alt={album.title} className="album-cover" />
+        <img src={album.cover} alt={album.title} className="album-cover" loading="lazy" />
         <StockBadge stock={album.stock} />
       </div>
       <h3>{album.title}</h3>

@@ -12,10 +12,6 @@
 
 ## 🟡 Средний приоритет
 
-### Image lazy loading
-Одна строка — заметная прибавка к производительности при большом каталоге.
-- `loading="lazy"` на все `<img>` в AlbumCard, SpecialOffers, FeaturedAlbum, CartPage, AdminPage
-
 ### Error Boundary
 Сейчас необработанная ошибка рендера даёт белый экран без объяснений.
 - Компонент `ErrorBoundary` оборачивает Routes
@@ -83,6 +79,7 @@
 - Заказы в Admin Panel — вкладка Orders, таблица с фильтром по дате и поиском по txHash
 - Расширен seed — 15 альбомов: Jazz, Soul, Electronic, Punk, Classical, Hip-Hop; upsert по title+artist
 - Похожие альбомы на странице альбома — SimilarAlbums компонент, grid→горизонтальный скролл на мобиле
+- Image lazy loading — `loading="lazy"` на все img, FeaturedAlbum получил `eager` (above the fold)
 
 - BK-01 Environment Setup
 - BK-02 Database Design

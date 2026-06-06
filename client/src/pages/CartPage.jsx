@@ -16,7 +16,7 @@ function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartN
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {cart.map((item) => (
               <li key={item._id} style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 20 }}>
-                <img src={item.coverUrl} alt={item.title} style={{ width: 60, borderRadius: 4 }} />
+                <img src={item.coverUrl} alt={item.title} style={{ width: 60, borderRadius: 4 }} loading="lazy" />
                 <div style={{ flex: 1 }}>
                   <b>{item.title}</b> by {item.artist} <br />
                   <div className="qty-controls">
