@@ -39,6 +39,19 @@ export async function updateSavedAddress(token, address) {
   return res.json();
 }
 
+export async function changePassword(token, currentPassword, newPassword) {
+  const res = await fetch('/api/auth/password', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  if (!res.ok) throw new Error(await parseError(res, 'Failed to change password'));
+  return res.json();
+}
+
 export async function confirmOrder(token, payload) {
   const res = await fetch('/api/orders', {
     method: 'POST',

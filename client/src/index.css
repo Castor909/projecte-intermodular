@@ -366,6 +366,44 @@ nav a {
 }
 
 /* Shipping form */
+.profile-page {
+  padding: 40px;
+  max-width: 560px;
+}
+
+.profile-page h2 {
+  margin: 0 0 32px;
+}
+
+.profile-section {
+  margin-bottom: 40px;
+}
+
+.profile-section h3 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.profile-email {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-email__label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-email__value {
+  font-size: 1rem;
+}
+
 .shipping-page {
   padding: 40px;
   max-width: 560px;

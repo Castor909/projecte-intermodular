@@ -11,8 +11,10 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import OrdersPage from './pages/OrdersPage';
+import ProfilePage from './pages/ProfilePage';
 import Header from './components/Header';
 import { useCart } from './useCart';
+import { useAuth } from './useAuth';
 
 function ConditionalHeader() {
   const location = useLocation();
@@ -23,6 +25,12 @@ function ConditionalHeader() {
 function AdminGuard({ children }) {
   const token = localStorage.getItem('admin_token');
   if (!token) return <Navigate to="/admin/login" replace />;
+  return children;
+}
+
+function AuthGuard({ children }) {
+  const { token } = useAuth();
+  if (!token) return <Navigate to="/login" replace />;
   return children;
 }
 
@@ -65,6 +73,7 @@ function Router() {
         <Route path="/checkout/shipping" element={<ShippingPage />} />
         <Route path="/checkout/payment" element={<PaymentPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/profile" element={<AuthGuard><ProfilePage /></AuthGuard>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />

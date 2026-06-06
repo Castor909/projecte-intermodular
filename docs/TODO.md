@@ -8,13 +8,6 @@
 
 ## 🟠 Высокий приоритет
 
-### Профиль пользователя (`/profile`)
-Без этой страницы auth ощущается незавершённым.
-- Отображение email и сохранённого адреса доставки
-- Редактирование адреса прямо на странице
-- Смена пароля (текущий пароль → новый → подтверждение)
-- Ссылка «Profile» в Header рядом с «My orders»
-
 ### Заказы в Admin Panel
 Сейчас admin видит только альбомы, но не знает кто что купил.
 - Новая вкладка / страница «Orders» в Admin Panel
@@ -105,6 +98,7 @@
 
 - Цена со скидкой на странице альбома, в корзине и PaymentPage (`effectivePrice` утилита)
 - Server-side пагинация каталога — `GET /api/albums?page&limit&search&genre&sort`, «Load more», genres endpoint
+- Страница профиля `/profile` — email, адрес доставки, смена пароля; ссылка в Header
 
 - BK-01 Environment Setup
 - BK-02 Database Design
