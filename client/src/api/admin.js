@@ -81,6 +81,17 @@ export async function fetchDiscogsRelease(releaseId) {
   return res.json();
 }
 
+export async function fetchAdminStats() {
+  const res = await fetch('/api/admin/stats', {
+    headers: { 'x-admin-token': getToken() },
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Failed to fetch stats');
+  }
+  return res.json();
+}
+
 export async function fetchAdminOrders(params = {}) {
   const clean = Object.fromEntries(
     Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')

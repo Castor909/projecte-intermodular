@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAlbums } from '../api/albums';
-import { clearAdminToken, createAlbum, deleteAlbum, fetchAdminOrders, updateAlbum } from '../api/admin';
+import { clearAdminToken, createAlbum, deleteAlbum, fetchAdminOrders, fetchAdminStats, updateAlbum } from '../api/admin';
 import AdminAlbumForm from '../components/AdminAlbumForm';
 
 const ETHERSCAN = 'https://etherscan.io/tx/';
@@ -31,6 +31,9 @@ function AdminPage() {
   const [adminSearch, setAdminSearch] = useState('');
   const [adminGenre, setAdminGenre] = useState('all');
 
+  // ── Stats state ──
+  const [stats, setStats] = useState(null);
+
   // ── Orders state ──
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
@@ -50,6 +53,7 @@ function AdminPage() {
 
   useEffect(() => {
     loadAlbums();
+    fetchAdminStats().then(setStats).catch(() => {});
   }, [loadAlbums]);
 
   const loadOrders = useCallback(() => {
@@ -156,6 +160,48 @@ function AdminPage() {
           </button>
         </div>
       </div>
+
+      {stats && (
+        <div className="admin-stats">
+          <div className="admin-stats__cards">
+            <div className="admin-stats__card">
+              <span className="admin-stats__value">{stats.totalAlbums}</span>
+              <span className="admin-stats__label">Albums</span>
+            </div>
+            <div className="admin-stats__card admin-stats__card--warn">
+              <span className="admin-stats__value">{stats.outOfStock}</span>
+              <span className="admin-stats__label">Out of stock</span>
+            </div>
+            <div className="admin-stats__card">
+              <span className="admin-stats__value">{stats.discounted}</span>
+              <span className="admin-stats__label">On sale</span>
+            </div>
+            <div className="admin-stats__card">
+              <span className="admin-stats__value">{stats.totalOrders}</span>
+              <span className="admin-stats__label">Orders</span>
+            </div>
+            <div className="admin-stats__card admin-stats__card--accent">
+              <span className="admin-stats__value">{stats.totalRevenue.toFixed(3)}</span>
+              <span className="admin-stats__label">ETH revenue</span>
+            </div>
+          </div>
+
+          {stats.topAlbums.length > 0 && (
+            <div className="admin-stats__top">
+              <h3 className="admin-stats__top-title">Top sellers</h3>
+              <ol className="admin-stats__top-list">
+                {stats.topAlbums.map((a) => (
+                  <li key={a._id} className="admin-stats__top-item">
+                    <span className="admin-stats__top-name">{a.title}</span>
+                    <span className="admin-stats__top-artist">{a.artist}</span>
+                    <span className="admin-stats__top-qty">{a.totalQty} sold</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="admin-tabs">
         <button

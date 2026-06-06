@@ -789,6 +789,103 @@ nav a {
   padding-top: 8px;
 }
 
+/* ===== Admin stats dashboard ===== */
+
+.admin-stats {
+  padding: 24px 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-stats__cards {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-stats__card {
+  flex: 1 1 100px;
+  background: rgba(62, 39, 35, 0.04);
+  border: 1px solid rgba(62, 39, 35, 0.1);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.admin-stats__card--warn {
+  background: rgba(211, 84, 0, 0.06);
+  border-color: rgba(211, 84, 0, 0.2);
+}
+
+.admin-stats__card--accent {
+  background: rgba(62, 39, 35, 0.08);
+  border-color: rgba(62, 39, 35, 0.2);
+}
+
+.admin-stats__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-color);
+}
+
+.admin-stats__label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.admin-stats__top {
+  border-top: 1px solid rgba(62, 39, 35, 0.1);
+  padding-top: 16px;
+}
+
+.admin-stats__top-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin: 0 0 12px;
+}
+
+.admin-stats__top-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-stats__top-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.admin-stats__top-name {
+  font-weight: 600;
+}
+
+.admin-stats__top-artist {
+  opacity: 0.55;
+  font-size: 0.85rem;
+}
+
+.admin-stats__top-qty {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 /* ===== Admin tabs ===== */
 
 .admin-tabs {

@@ -12,12 +12,6 @@
 
 ## 🟡 Средний приоритет
 
-### Статистика в Admin Panel
-Дашборд в верхней части `/admin`.
-- Карточки: всего альбомов, out of stock, со скидкой, всего заказов
-- Топ-5 самых продаваемых альбомов (по данным коллекции Order)
-- Общий доход в ETH
-
 ---
 
 ## 🟢 Низкий приоритет
@@ -76,6 +70,7 @@
 - Похожие альбомы на странице альбома — SimilarAlbums компонент, grid→горизонтальный скролл на мобиле
 - Image lazy loading — `loading="lazy"` на все img, FeaturedAlbum получил `eager` (above the fold)
 - Error Boundary — class component, оборачивает Routes, показывает сообщение + кнопку Reload
+- Статистика в Admin Panel — карточки (albums/out of stock/on sale/orders/ETH), топ-5 продаваемых
 
 - BK-01 Environment Setup
 - BK-02 Database Design
