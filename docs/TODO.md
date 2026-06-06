@@ -12,11 +12,6 @@
 
 ## 🟡 Средний приоритет
 
-### Error Boundary
-Сейчас необработанная ошибка рендера даёт белый экран без объяснений.
-- Компонент `ErrorBoundary` оборачивает Routes
-- Показывает читаемое сообщение с кнопкой «Reload»
-
 ### Статистика в Admin Panel
 Дашборд в верхней части `/admin`.
 - Карточки: всего альбомов, out of stock, со скидкой, всего заказов
@@ -80,6 +75,7 @@
 - Расширен seed — 15 альбомов: Jazz, Soul, Electronic, Punk, Classical, Hip-Hop; upsert по title+artist
 - Похожие альбомы на странице альбома — SimilarAlbums компонент, grid→горизонтальный скролл на мобиле
 - Image lazy loading — `loading="lazy"` на все img, FeaturedAlbum получил `eager` (above the fold)
+- Error Boundary — class component, оборачивает Routes, показывает сообщение + кнопку Reload
 
 - BK-01 Environment Setup
 - BK-02 Database Design

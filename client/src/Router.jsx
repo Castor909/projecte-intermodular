@@ -13,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import OrdersPage from './pages/OrdersPage';
 import ProfilePage from './pages/ProfilePage';
 import Header from './components/Header';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useCart } from './useCart';
 import { useAuth } from './useAuth';
 
@@ -48,6 +49,7 @@ function Router() {
   return (
     <BrowserRouter>
       <ConditionalHeader />
+      <ErrorBoundary>
       <Routes>
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminGuard><AdminPage /></AdminGuard>} />
@@ -78,6 +80,7 @@ function Router() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
