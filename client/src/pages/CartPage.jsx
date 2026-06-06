@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { effectivePrice } from '../utils/price';
 
 function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartNotice, onClearNotice }) {
   const navigate = useNavigate();
-  const total = cart.reduce((sum, item) => sum + (item.priceEth * item.qty), 0);
+  const total = cart.reduce((sum, item) => sum + effectivePrice(item) * item.qty, 0);
   return (
     <div className="cart-page" style={{ padding: 40 }}>
       <h2>Your Cart</h2>
@@ -33,7 +34,12 @@ function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartN
                     <small>Available: {item.stock}</small>
                   )}
                 </div>
-                <span>{(item.priceEth * item.qty).toFixed(3)} ETH</span>
+                <span>
+                  {item.discountPercent > 0 && (
+                    <s style={{ color: '#999', marginRight: 4, fontSize: '0.85em' }}>{item.priceEth} ETH</s>
+                  )}
+                  {(effectivePrice(item) * item.qty).toFixed(3)} ETH
+                </span>
                 <button onClick={() => onRemove(item._id)}>Remove</button>
               </li>
             ))}

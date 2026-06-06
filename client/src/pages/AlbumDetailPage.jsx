@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchAlbumById } from '../api/albums';
 import AudioPlayer from '../components/AudioPlayer';
 import { SkeletonDetail } from '../components/SkeletonCard';
+import { effectivePrice } from '../utils/price';
 
 function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   const { id } = useParams();
@@ -36,6 +37,8 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   }
 
   const isOutOfStock = Number.isFinite(album?.stock) && album.stock <= 0;
+  const hasDiscount = Number.isFinite(album?.discountPercent) && album.discountPercent > 0;
+  const discountedEth = hasDiscount ? effectivePrice(album).toFixed(3) : null;
 
   if (loading) return <div style={{ padding: 40 }}><SkeletonDetail /></div>;
   if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
@@ -57,7 +60,15 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           <p><b>Genre:</b> {album.genre}</p>
           <p><b>Description:</b> {album.description}</p>
           <p><b>Stock:</b> {album.stock ?? 'N/A'}</p>
-          <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.priceEth} ETH</p>
+          {hasDiscount ? (
+            <div className="album-card__pricing">
+              <span className="album-card__original">{album.priceEth} ETH</span>
+              <span className="album-card__discounted">{discountedEth} ETH</span>
+              <span className="album-card__discount-badge">−{album.discountPercent}%</span>
+            </div>
+          ) : (
+            <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.priceEth} ETH</p>
+          )}
           <button className="btn-connect btn-large" onClick={handleAddToCart} disabled={isOutOfStock}>
             {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
           </button>

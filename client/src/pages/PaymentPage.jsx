@@ -4,6 +4,7 @@ import { useCart } from '../useCart';
 import { useAuth } from '../useAuth';
 import { confirmOrder } from '../api/auth';
 import { STORE_WALLET } from '../config/payment';
+import { effectivePrice } from '../utils/price';
 
 const SHIPPING_KEY = 'vinyleth_shipping';
 
@@ -37,7 +38,7 @@ function PaymentPage() {
   const [txHash, setTxHash] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const total = cart.reduce((sum, item) => sum + item.priceEth * item.qty, 0);
+  const total = cart.reduce((sum, item) => sum + effectivePrice(item) * item.qty, 0);
 
   if (!isValidAddress(STORE_WALLET)) {
     return (
@@ -92,7 +93,7 @@ function PaymentPage() {
           title: item.title,
           artist: item.artist,
           qty: item.qty,
-          priceEth: item.priceEth,
+          priceEth: effectivePrice(item),
         })),
         shippingAddress: shipping,
       }).catch(() => {});
@@ -139,7 +140,12 @@ function PaymentPage() {
             {cart.map((item) => (
               <li key={item._id} className="payment-item">
                 <span>{item.title} × {item.qty}</span>
-                <span>{(item.priceEth * item.qty).toFixed(3)} ETH</span>
+                <span>
+                  {item.discountPercent > 0 && (
+                    <s style={{ color: '#999', marginRight: 4, fontSize: '0.85em' }}>{(item.priceEth * item.qty).toFixed(3)} ETH</s>
+                  )}
+                  {(effectivePrice(item) * item.qty).toFixed(3)} ETH
+                </span>
               </li>
             ))}
           </ul>
