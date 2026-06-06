@@ -1,107 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FeaturedAlbum from '../components/FeaturedAlbum';
 import SpecialOffers from '../components/SpecialOffers';
 import AlbumCard from '../components/AlbumCard';
 import { SkeletonCard } from '../components/SkeletonCard';
-import { fetchAlbums } from '../api/albums';
+import { fetchAlbums, fetchGenres } from '../api/albums';
 import { useDebounce } from '../useDebounce';
 
-function sortAlbums(albums, sortMode) {
-  const sorted = [...albums];
+const LIMIT = 24;
 
-  switch (sortMode) {
-    case 'title-asc':
-      sorted.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-    case 'title-desc':
-      sorted.sort((a, b) => b.title.localeCompare(a.title));
-      break;
-    case 'price-asc':
-      sorted.sort((a, b) => a.priceEth - b.priceEth);
-      break;
-    case 'price-desc':
-      sorted.sort((a, b) => b.priceEth - a.priceEth);
-      break;
-    case 'year-desc':
-      sorted.sort((a, b) => b.year - a.year);
-      break;
-    case 'year-asc':
-      sorted.sort((a, b) => a.year - b.year);
-      break;
-    case 'stock-desc':
-      sorted.sort((a, b) => (b.stock || 0) - (a.stock || 0));
-      break;
-    default:
-      sorted.sort((a, b) => Number(b.featured) - Number(a.featured));
-      break;
-  }
-
-  return sorted;
+function transformAlbum(album) {
+  return {
+    ...album,
+    cover: album.coverUrl || album.cover,
+    price: album.priceEth ? `${album.priceEth} ETH` : album.price,
+  };
 }
 
 function CatalogPage() {
   const [albums, setAlbums] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadedPage, setLoadedPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
+  const [genres, setGenres] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [genreFilter, setGenreFilter] = useState('all');
   const [sortMode, setSortMode] = useState('featured');
 
   const debouncedSearch = useDebounce(searchTerm, 250);
+  const abortRef = useRef(null);
 
   useEffect(() => {
-    fetchAlbums()
+    fetchGenres().then(setGenres).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setLoading(true);
+    setAlbums([]);
+    setLoadedPage(1);
+
+    const params = {
+      page: 1,
+      limit: LIMIT,
+      sort: sortMode,
+      ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
+      ...(genreFilter !== 'all' && { genre: genreFilter }),
+    };
+
+    fetchAlbums(params)
       .then((data) => {
-        const transformed = data.map((album) => ({
-          ...album,
-          cover: album.coverUrl || album.cover,
-          price: album.priceEth ? `${album.priceEth} ETH` : album.price,
-        }));
-        setAlbums(transformed);
+        if (controller.signal.aborted) return;
+        setAlbums(data.albums.map(transformAlbum));
+        setTotal(data.total);
+        setTotalPages(data.pages);
         setLoading(false);
       })
       .catch((err) => {
+        if (controller.signal.aborted) return;
         setError(err.message);
         setLoading(false);
       });
-  }, []);
+  }, [debouncedSearch, genreFilter, sortMode]);
+
+  function loadMore() {
+    const nextPage = loadedPage + 1;
+    setLoadingMore(true);
+
+    const params = {
+      page: nextPage,
+      limit: LIMIT,
+      sort: sortMode,
+      ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
+      ...(genreFilter !== 'all' && { genre: genreFilter }),
+    };
+
+    fetchAlbums(params)
+      .then((data) => {
+        setAlbums((prev) => [...prev, ...data.albums.map(transformAlbum)]);
+        setLoadedPage(nextPage);
+        setLoadingMore(false);
+      })
+      .catch(() => setLoadingMore(false));
+  }
+
+  const hasMore = loadedPage < totalPages;
 
   if (loading) {
     return (
-      <section className="catalog-toolbar-section">
-        <div className="catalog-summary">
-          <h2>New Arrivals</h2>
-        </div>
-        <div className="catalog-grid">
-          {Array.from({ length: 8 }, (_, i) => <SkeletonCard key={i} />)}
-        </div>
-      </section>
+      <>
+        <FeaturedAlbum />
+        <SpecialOffers />
+        <section className="catalog-toolbar-section">
+          <div className="catalog-summary"><h2>New Arrivals</h2></div>
+          <div className="catalog-grid">
+            {Array.from({ length: 8 }, (_, i) => <SkeletonCard key={i} />)}
+          </div>
+        </section>
+      </>
     );
   }
 
   if (error) return <div style={{ padding: 40, color: 'red' }}>Error: {error}</div>;
-  if (albums.length === 0) return <div style={{ padding: 40 }}>No albums found.</div>;
-
-  const genres = [...new Set(albums.map((album) => album.genre))].sort((a, b) => a.localeCompare(b));
-
-  const visibleAlbums = sortAlbums(
-    albums.filter((album) => {
-      const normalizedSearch = debouncedSearch.trim().toLowerCase();
-      const matchesSearch =
-        normalizedSearch.length === 0 ||
-        [album.title, album.artist, album.genre]
-          .filter(Boolean)
-          .some((field) => field.toLowerCase().includes(normalizedSearch));
-      const matchesGenre = genreFilter === 'all' || album.genre === genreFilter;
-      return matchesSearch && matchesGenre;
-    }),
-    sortMode
-  );
 
   return (
     <>
-      <FeaturedAlbum album={albums[0]} />
-      <SpecialOffers albums={albums} />
+      <FeaturedAlbum />
+      <SpecialOffers />
       <section className="catalog-toolbar-section">
         <div className="catalog-toolbar">
           <div className="catalog-toolbar__group">
@@ -110,7 +120,7 @@ function CatalogPage() {
               id="catalog-search"
               type="search"
               value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Title, artist, or genre"
             />
           </div>
@@ -120,7 +130,7 @@ function CatalogPage() {
             <select
               id="catalog-genre"
               value={genreFilter}
-              onChange={(event) => setGenreFilter(event.target.value)}
+              onChange={(e) => setGenreFilter(e.target.value)}
             >
               <option value="all">All genres</option>
               {genres.map((genre) => (
@@ -134,7 +144,7 @@ function CatalogPage() {
             <select
               id="catalog-sort"
               value={sortMode}
-              onChange={(event) => setSortMode(event.target.value)}
+              onChange={(e) => setSortMode(e.target.value)}
             >
               <option value="featured">Featured first</option>
               <option value="title-asc">Title A-Z</option>
@@ -150,20 +160,31 @@ function CatalogPage() {
 
         <div className="catalog-summary">
           <h2>New Arrivals</h2>
-          <p>{visibleAlbums.length} result{visibleAlbums.length === 1 ? '' : 's'}</p>
+          <p>{total} result{total === 1 ? '' : 's'}</p>
         </div>
 
-        {visibleAlbums.length === 0 ? (
+        {albums.length === 0 ? (
           <div className="catalog-empty-state">
             <h3>No matches found</h3>
             <p>Try a different search term, genre, or sort order.</p>
           </div>
         ) : (
-          <div className="catalog-grid">
-            {visibleAlbums.map((album) => (
-              <AlbumCard key={album._id || album.id} album={album} />
-            ))}
-          </div>
+          <>
+            <div className="catalog-grid">
+              {albums.map((album) => (
+                <AlbumCard key={album._id || album.id} album={album} />
+              ))}
+              {loadingMore && Array.from({ length: 4 }, (_, i) => <SkeletonCard key={`more-${i}`} />)}
+            </div>
+
+            {hasMore && !loadingMore && (
+              <div style={{ textAlign: 'center', marginTop: 32 }}>
+                <button className="btn-connect" onClick={loadMore}>
+                  Load more ({albums.length} of {total})
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
     </>

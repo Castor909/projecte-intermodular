@@ -8,13 +8,6 @@
 
 ## 🟠 Высокий приоритет
 
-### Server-side пагинация каталога
-При 350 альбомах один запрос тянет всё сразу — медленно и дорого по памяти.
-- `GET /api/albums?page=1&limit=24&genre=Rock&sort=year-desc` на бэкенде
-- Ответ: `{ albums: [...], total, page, pages }`
-- Фронт: кнопка «Load more» или нумерованные страницы
-- Инвалидировать при смене фильтра/сортировки
-
 ### Профиль пользователя (`/profile`)
 Без этой страницы auth ощущается незавершённым.
 - Отображение email и сохранённого адреса доставки
@@ -111,6 +104,7 @@
 ## ✅ Выполнено
 
 - Цена со скидкой на странице альбома, в корзине и PaymentPage (`effectivePrice` утилита)
+- Server-side пагинация каталога — `GET /api/albums?page&limit&search&genre&sort`, «Load more», genres endpoint
 
 - BK-01 Environment Setup
 - BK-02 Database Design

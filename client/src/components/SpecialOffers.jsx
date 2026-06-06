@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StockBadge from './StockBadge';
+import { fetchAlbums } from '../api/albums';
 
-function SpecialOffers({ albums }) {
+function SpecialOffers() {
   const navigate = useNavigate();
-  const discounted = albums.filter(
-    (album) => Number.isFinite(album.discountPercent) && album.discountPercent > 0
-  );
+  const [discounted, setDiscounted] = useState([]);
+
+  useEffect(() => {
+    fetchAlbums({ discounted: 'true' })
+      .then((data) => setDiscounted(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
 
   if (discounted.length === 0) return null;
 
@@ -19,7 +24,7 @@ function SpecialOffers({ albums }) {
           return (
             <div key={album._id || album.id} className="special-offer-card">
               <span className="special-offer-badge">−{album.discountPercent}%</span>
-              <img src={album.cover} alt={album.title} className="special-offer-cover" />
+              <img src={album.coverUrl || album.cover} alt={album.title} className="special-offer-cover" />
               <div className="special-offer-info">
                 <p className="special-offer-artist">{album.artist}</p>
                 <h3 className="special-offer-name">{album.title}</h3>

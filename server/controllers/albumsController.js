@@ -1,11 +1,55 @@
 const Album = require('../models/Album');
 const mongoose = require('mongoose');
 
+const SORT_MAP = {
+  'title-asc':  { title: 1 },
+  'title-desc': { title: -1 },
+  'price-asc':  { priceEth: 1 },
+  'price-desc': { priceEth: -1 },
+  'year-desc':  { year: -1 },
+  'year-asc':   { year: 1 },
+  'stock-desc': { stock: -1 },
+};
+
 // GET /api/albums
 async function getAlbums(req, res, next) {
   try {
-    const albums = await Album.find();
+    const { page, limit = '24', search, genre, sort, featured, discounted } = req.query;
+
+    const filter = {};
+    if (genre && genre !== 'all') filter.genre = genre;
+    if (featured === 'true') filter.featured = true;
+    if (discounted === 'true') filter.discountPercent = { $gt: 0 };
+    if (search && search.trim()) {
+      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(escaped, 'i');
+      filter.$or = [{ title: re }, { artist: re }, { genre: re }];
+    }
+
+    const sortObj = SORT_MAP[sort] || { featured: -1, createdAt: -1 };
+
+    if (page !== undefined) {
+      const pageNum = Math.max(1, parseInt(page, 10) || 1);
+      const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 24));
+      const [albums, total] = await Promise.all([
+        Album.find(filter).sort(sortObj).skip((pageNum - 1) * limitNum).limit(limitNum),
+        Album.countDocuments(filter),
+      ]);
+      return res.json({ albums, total, page: pageNum, pages: Math.ceil(total / limitNum) });
+    }
+
+    const albums = await Album.find(filter).sort(sortObj);
     res.json(albums);
+  } catch (err) {
+    next(err);
+  }
+}
+
+// GET /api/albums/genres
+async function getGenres(req, res, next) {
+  try {
+    const genres = await Album.distinct('genre');
+    res.json(genres.filter(Boolean).sort((a, b) => a.localeCompare(b)));
   } catch (err) {
     next(err);
   }
@@ -72,6 +116,7 @@ async function deleteAlbum(req, res, next) {
 
 module.exports = {
   getAlbums,
+  getGenres,
   getAlbumById,
   createAlbum,
   updateAlbum,
