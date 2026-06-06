@@ -4,6 +4,7 @@ import { fetchAlbumById } from '../api/albums';
 import AudioPlayer from '../components/AudioPlayer';
 import { SkeletonDetail } from '../components/SkeletonCard';
 import { effectivePrice } from '../utils/price';
+import SimilarAlbums from '../components/SimilarAlbums';
 
 function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   const { id } = useParams();
@@ -101,6 +102,7 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           </ol>
         </div>
       )}
+      <SimilarAlbums genre={album.genre} excludeId={album._id} />
     </div>
   );
 }

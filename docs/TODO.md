@@ -12,12 +12,6 @@
 
 ## 🟡 Средний приоритет
 
-### Похожие альбомы на странице альбома
-Раздел «You might also like» после трекбиста.
-- 4 альбома того же жанра или исполнителя (исключая текущий)
-- Клиентская логика: брать из уже загруженных данных или отдельный `GET /api/albums?genre=X&limit=4`
-- Горизонтальный скролл на мобиле
-
 ### Image lazy loading
 Одна строка — заметная прибавка к производительности при большом каталоге.
 - `loading="lazy"` на все `<img>` в AlbumCard, SpecialOffers, FeaturedAlbum, CartPage, AdminPage
@@ -88,6 +82,7 @@
 - Страница профиля `/profile` — email, адрес доставки, смена пароля; ссылка в Header
 - Заказы в Admin Panel — вкладка Orders, таблица с фильтром по дате и поиском по txHash
 - Расширен seed — 15 альбомов: Jazz, Soul, Electronic, Punk, Classical, Hip-Hop; upsert по title+artist
+- Похожие альбомы на странице альбома — SimilarAlbums компонент, grid→горизонтальный скролл на мобиле
 
 - BK-01 Environment Setup
 - BK-02 Database Design

@@ -652,6 +652,47 @@ nav a {
   margin-left: 16px;
 }
 
+/* ===== Similar albums ===== */
+
+.similar-albums {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(62, 39, 35, 0.12);
+}
+
+.similar-albums__title {
+  font-size: 1.2rem;
+  margin: 0 0 24px;
+}
+
+.similar-albums__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .similar-albums__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .similar-albums__grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .similar-albums__grid .album-card {
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+  }
+}
+
 /* ===== Skeleton loading ===== */
 
 @keyframes shimmer {
