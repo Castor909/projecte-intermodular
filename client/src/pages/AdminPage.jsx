@@ -173,6 +173,22 @@ function AdminPage() {
     setSaveError('');
   }
 
+  function handleExportCsv() {
+    const FIELDS = ['title', 'artist', 'year', 'genre', 'priceEth', 'discountPercent', 'stock', 'featured'];
+    const escape = (v) => {
+      const s = String(v ?? '');
+      return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows = [FIELDS.join(','), ...visibleAlbums.map((a) => FIELDS.map((f) => escape(a[f])).join(','))];
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vinyleth-albums-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function handleUnauthorized() {
     clearAdminToken();
     navigate('/admin/login');
@@ -405,7 +421,12 @@ function AdminPage() {
                   ? `${visibleAlbums.length} of ${albums.length}`
                   : albums.length})
               </h2>
-              <button className="btn-connect" onClick={handleCreate}>+ Add Album</button>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn-secondary admin-btn-small" onClick={handleExportCsv} disabled={visibleAlbums.length === 0}>
+                  Export CSV
+                </button>
+                <button className="btn-connect" onClick={handleCreate}>+ Add Album</button>
+              </div>
             </div>
 
             {!loading && !fetchError && albums.length > 0 && (

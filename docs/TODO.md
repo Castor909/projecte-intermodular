@@ -16,10 +16,6 @@
 
 ## 🟢 Низкий приоритет
 
-### CSV-экспорт каталога из Admin Panel
-- Кнопка «Export CSV» скачивает текущую таблицу (с учётом фильтра)
-- Поля: title, artist, year, genre, priceEth, discountPercent, stock, featured
-
 ### Быстрый импорт через Discogs в Admin Panel
 Создать альбом без открытия полной формы.
 - Поле «Discogs Release ID» прямо над таблицей
@@ -57,6 +53,7 @@
 - Wishlist — WishlistContext/localStorage, ♡ на AlbumCard и DetailPage, /wishlist, badge в Header
 - Recently viewed — localStorage (макс. 6), запись при загрузке /album/:id, секция внизу каталога
 - Массовые операции в Admin Panel — чекбоксы, select all, batch bar: скидка/сброс/featured/delete
+- CSV-экспорт — клиентский blob, имя файла с датой, экспортирует visibleAlbums (с учётом фильтра)
 
 - BK-01 Environment Setup
 - BK-02 Database Design
