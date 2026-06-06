@@ -16,12 +16,6 @@
 
 ## 🟢 Низкий приоритет
 
-### PWA manifest
-Делает сайт устанавливаемым на телефон / рабочий стол.
-- `manifest.json`: name, short_name, theme_color, icons (192/512)
-- `<link rel="manifest">` в `index.html`
-- Service Worker — опционально, только для оффлайн-каталога
-
 ---
 
 ### Флоу ведения библиотеки (Navidrome → VinylEth)
@@ -49,6 +43,7 @@
 - Массовые операции в Admin Panel — чекбоксы, select all, batch bar: скидка/сброс/featured/delete
 - CSV-экспорт — клиентский blob, имя файла с датой, экспортирует visibleAlbums (с учётом фильтра)
 - Быстрый Discogs-импорт — поле ID над таблицей, mapDiscogs вынесен в utils, priceEth/stock = 0
+- PWA manifest — icon.svg (vinyl record), manifest.json, title/meta/theme-color в index.html
 
 - BK-01 Environment Setup
 - BK-02 Database Design
