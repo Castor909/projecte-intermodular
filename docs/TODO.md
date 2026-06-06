@@ -16,12 +16,6 @@
 
 ## 🟢 Низкий приоритет
 
-### Быстрый импорт через Discogs в Admin Panel
-Создать альбом без открытия полной формы.
-- Поле «Discogs Release ID» прямо над таблицей
-- Кнопка «Import» → фетч данных → создание записи → появление в таблице
-- Price/stock по дефолту (0/0), редактировать потом
-
 ### PWA manifest
 Делает сайт устанавливаемым на телефон / рабочий стол.
 - `manifest.json`: name, short_name, theme_color, icons (192/512)
@@ -54,6 +48,7 @@
 - Recently viewed — localStorage (макс. 6), запись при загрузке /album/:id, секция внизу каталога
 - Массовые операции в Admin Panel — чекбоксы, select all, batch bar: скидка/сброс/featured/delete
 - CSV-экспорт — клиентский blob, имя файла с датой, экспортирует visibleAlbums (с учётом фильтра)
+- Быстрый Discogs-импорт — поле ID над таблицей, mapDiscogs вынесен в utils, priceEth/stock = 0
 
 - BK-01 Environment Setup
 - BK-02 Database Design

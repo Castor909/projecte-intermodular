@@ -964,6 +964,23 @@ nav a {
   font-size: 0.9rem;
 }
 
+/* ===== Admin quick Discogs import ===== */
+
+.admin-quick-import {
+  margin-bottom: 12px;
+}
+
+.admin-quick-import__form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-quick-import__input {
+  max-width: 240px;
+  flex: 0 0 240px;
+}
+
 /* ===== Admin batch bar ===== */
 
 .admin-batch-bar {

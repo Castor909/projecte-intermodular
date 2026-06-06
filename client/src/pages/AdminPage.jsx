@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAlbums } from '../api/albums';
-import { clearAdminToken, createAlbum, deleteAlbum, fetchAdminOrders, fetchAdminStats, updateAlbum } from '../api/admin';
+import { clearAdminToken, createAlbum, deleteAlbum, fetchAdminOrders, fetchAdminStats, fetchDiscogsRelease, updateAlbum } from '../api/admin';
+import { mapDiscogs } from '../utils/mapDiscogs';
 import AdminAlbumForm from '../components/AdminAlbumForm';
 
 const ETHERSCAN = 'https://etherscan.io/tx/';
@@ -30,6 +31,11 @@ function AdminPage() {
   const [saveError, setSaveError] = useState('');
   const [adminSearch, setAdminSearch] = useState('');
   const [adminGenre, setAdminGenre] = useState('all');
+
+  // ── Quick Discogs import state ──
+  const [quickDiscogsId, setQuickDiscogsId] = useState('');
+  const [quickImporting, setQuickImporting] = useState(false);
+  const [quickImportStatus, setQuickImportStatus] = useState(null); // { ok, message }
 
   // ── Batch selection state ──
   const [selected, setSelected] = useState(new Set());
@@ -171,6 +177,42 @@ function AdminPage() {
     setMode('list');
     setEditTarget(null);
     setSaveError('');
+  }
+
+  async function handleQuickDiscogsImport() {
+    const id = quickDiscogsId.trim();
+    if (!id) return;
+    setQuickImporting(true);
+    setQuickImportStatus(null);
+    try {
+      const data = await fetchDiscogsRelease(id);
+      const { formData, tracks } = mapDiscogs(data);
+      const album = await createAlbum({
+        title: formData.title || 'Untitled',
+        artist: formData.artist || 'Unknown',
+        year: Number(formData.year) || new Date().getFullYear(),
+        genre: formData.genre || 'Unknown',
+        priceEth: 0,
+        stock: 0,
+        discountPercent: 0,
+        featured: false,
+        description: '—',
+        coverUrl: formData.coverUrl || '',
+        label: formData.label || '',
+        country: formData.country || '',
+        vinylFormat: formData.vinylFormat || '',
+        barcode: formData.barcode || '',
+        tracks: tracks || [],
+      });
+      setAlbums((prev) => [album, ...prev]);
+      setQuickDiscogsId('');
+      setQuickImportStatus({ ok: true, message: `"${album.title}" imported. Edit to add price and stock.` });
+    } catch (err) {
+      if (err.message.toLowerCase().includes('unauthorized')) { handleUnauthorized(); return; }
+      setQuickImportStatus({ ok: false, message: err.message });
+    } finally {
+      setQuickImporting(false);
+    }
   }
 
   function handleExportCsv() {
@@ -453,6 +495,34 @@ function AdminPage() {
 
             {loading && <p>Loading albums...</p>}
             {fetchError && <p className="notice warning">{fetchError}</p>}
+
+            <div className="admin-quick-import">
+              <form
+                className="admin-quick-import__form"
+                onSubmit={(e) => { e.preventDefault(); handleQuickDiscogsImport(); }}
+              >
+                <input
+                  type="text"
+                  value={quickDiscogsId}
+                  onChange={(e) => { setQuickDiscogsId(e.target.value); setQuickImportStatus(null); }}
+                  placeholder="Discogs Release ID"
+                  className="admin-filter-search admin-quick-import__input"
+                  disabled={quickImporting}
+                />
+                <button
+                  type="submit"
+                  className="btn-secondary admin-btn-small"
+                  disabled={quickImporting || !quickDiscogsId.trim()}
+                >
+                  {quickImporting ? 'Importing…' : 'Import from Discogs'}
+                </button>
+              </form>
+              {quickImportStatus && (
+                <p className={`notice ${quickImportStatus.ok ? 'success' : 'warning'}`} style={{ margin: '6px 0 0' }}>
+                  {quickImportStatus.message}
+                </p>
+              )}
+            </div>
 
             {!loading && !fetchError && selected.size > 0 && (
               <div className="admin-batch-bar">
