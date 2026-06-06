@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StockBadge from './StockBadge';
+import { useWishlist } from '../useWishlist';
 
 function AlbumCard({ album }) {
   const navigate = useNavigate();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const saved = isInWishlist(album._id);
   const hasDiscount = Number.isFinite(album.discountPercent) && album.discountPercent > 0;
   const discountedEth = hasDiscount
     ? (album.priceEth * (1 - album.discountPercent / 100)).toFixed(3)
@@ -14,6 +17,13 @@ function AlbumCard({ album }) {
       <div className="album-card__cover-wrap">
         <img src={album.cover} alt={album.title} className="album-cover" loading="lazy" />
         <StockBadge stock={album.stock} />
+        <button
+          className={`wishlist-btn${saved ? ' wishlist-btn--active' : ''}`}
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(album); }}
+          aria-label={saved ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          {saved ? '♥' : '♡'}
+        </button>
       </div>
       <h3>{album.title}</h3>
       <p>{album.artist}</p>

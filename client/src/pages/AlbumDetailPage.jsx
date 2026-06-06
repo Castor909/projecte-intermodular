@@ -5,6 +5,8 @@ import AudioPlayer from '../components/AudioPlayer';
 import { SkeletonDetail } from '../components/SkeletonCard';
 import { effectivePrice } from '../utils/price';
 import SimilarAlbums from '../components/SimilarAlbums';
+import { useWishlist } from '../useWishlist';
+import { addToRecentlyViewed } from '../utils/recentlyViewed';
 
 function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
   const { id } = useParams();
@@ -16,7 +18,10 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
 
   useEffect(() => {
     fetchAlbumById(id)
-      .then(setAlbum)
+      .then((data) => {
+        setAlbum(data);
+        addToRecentlyViewed(data);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [id]);
@@ -37,6 +42,7 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
     }
   }
 
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const isOutOfStock = Number.isFinite(album?.stock) && album.stock <= 0;
   const hasDiscount = Number.isFinite(album?.discountPercent) && album.discountPercent > 0;
   const discountedEth = hasDiscount ? effectivePrice(album).toFixed(3) : null;
@@ -70,9 +76,18 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
           ) : (
             <p style={{ fontWeight: 'bold', color: '#D35400' }}>{album.priceEth} ETH</p>
           )}
-          <button className="btn-connect btn-large" onClick={handleAddToCart} disabled={isOutOfStock}>
-            {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-          </button>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-connect btn-large" onClick={handleAddToCart} disabled={isOutOfStock}>
+              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            </button>
+            <button
+              className={`wishlist-btn wishlist-btn--detail${isInWishlist(album._id) ? ' wishlist-btn--active' : ''}`}
+              onClick={() => toggleWishlist({ ...album, cover: album.coverUrl || album.cover })}
+              aria-label={isInWishlist(album._id) ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+              {isInWishlist(album._id) ? '♥ Saved' : '♡ Save'}
+            </button>
+          </div>
           {cartNotice && <p className="notice warning">{cartNotice}</p>}
           {addMessage && <p className="notice success">{addMessage}</p>}
 

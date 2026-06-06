@@ -16,17 +16,6 @@
 
 ## 🟢 Низкий приоритет
 
-### Wishlist / Избранное
-Кнопка «♡» на AlbumCard и странице альбома.
-- localStorage-based, без бэкенда
-- Страница `/wishlist` со списком отложенных альбомов
-- Badge с количеством в Header
-
-### Недавно просмотренные
-Секция «Recently viewed» в нижней части каталога или главной.
-- Хранится в localStorage (последние 6 альбомов)
-- Обновляется при заходе на страницу `/album/:id`
-
 ### Массовые операции в Admin Panel
 При 350 альбомах редактировать по одному неудобно.
 - Чекбоксы в таблице, кнопка «Select all»
@@ -71,6 +60,8 @@
 - Image lazy loading — `loading="lazy"` на все img, FeaturedAlbum получил `eager` (above the fold)
 - Error Boundary — class component, оборачивает Routes, показывает сообщение + кнопку Reload
 - Статистика в Admin Panel — карточки (albums/out of stock/on sale/orders/ETH), топ-5 продаваемых
+- Wishlist — WishlistContext/localStorage, ♡ на AlbumCard и DetailPage, /wishlist, badge в Header
+- Recently viewed — localStorage (макс. 6), запись при загрузке /album/:id, секция внизу каталога
 
 - BK-01 Environment Setup
 - BK-02 Database Design

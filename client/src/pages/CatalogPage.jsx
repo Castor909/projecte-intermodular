@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import FeaturedAlbum from '../components/FeaturedAlbum';
 import SpecialOffers from '../components/SpecialOffers';
 import AlbumCard from '../components/AlbumCard';
+import RecentlyViewed from '../components/RecentlyViewed';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { fetchAlbums, fetchGenres } from '../api/albums';
 import { useDebounce } from '../useDebounce';
@@ -187,6 +188,7 @@ function CatalogPage() {
           </>
         )}
       </section>
+      <RecentlyViewed />
     </>
   );
 }

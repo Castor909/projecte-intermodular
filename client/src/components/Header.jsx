@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../useAuth';
+import { useWishlist } from '../useWishlist';
 
 function Header() {
   const { user, logout } = useAuth();
+  const { wishlist } = useWishlist();
   const [walletState, setWalletState] = useState('idle');
   const [walletAddress, setWalletAddress] = useState('');
   const [walletError, setWalletError] = useState('');
@@ -123,6 +125,9 @@ function Header() {
       <nav>
         <Link to="/">Catalog</Link>
         <Link to="/cart">Cart</Link>
+        <Link to="/wishlist" className="nav-wishlist">
+          Wishlist{wishlist.length > 0 && <span className="nav-badge">{wishlist.length}</span>}
+        </Link>
         <a href="#">About</a>
         <a href="#">Contact</a>
       </nav>
