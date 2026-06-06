@@ -2,13 +2,12 @@ const Album = require('../models/Album');
 const albums = require('../data/albums');
 
 async function seedAlbums() {
-  const albumCount = await Album.countDocuments();
-
-  if (albumCount > 0) {
-    return;
+  for (const album of albums) {
+    const exists = await Album.exists({ title: album.title, artist: album.artist });
+    if (!exists) {
+      await Album.create(album);
+    }
   }
-
-  await Album.insertMany(albums);
 }
 
 module.exports = {

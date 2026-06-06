@@ -12,13 +12,6 @@
 
 ## 🟡 Средний приоритет
 
-### Расширить каталог (seed)
-Сейчас только 3 альбома — мало для демо поиска, фильтров и сортировки.
-- 12–15 альбомов разных жанров: Jazz, Soul, Electronic, Punk, Classical, Hip-Hop
-- Разнообразить ценовой диапазон (0.01 – 0.12 ETH)
-- Несколько с `stock: 0` (out of stock), несколько с `stock: 1–2` (low stock)
-- Несколько с `discountPercent > 0` для секции Special Offers
-
 ### Похожие альбомы на странице альбома
 Раздел «You might also like» после трекбиста.
 - 4 альбома того же жанра или исполнителя (исключая текущий)
@@ -94,6 +87,7 @@
 - Server-side пагинация каталога — `GET /api/albums?page&limit&search&genre&sort`, «Load more», genres endpoint
 - Страница профиля `/profile` — email, адрес доставки, смена пароля; ссылка в Header
 - Заказы в Admin Panel — вкладка Orders, таблица с фильтром по дате и поиском по txHash
+- Расширен seed — 15 альбомов: Jazz, Soul, Electronic, Punk, Classical, Hip-Hop; upsert по title+artist
 
 - BK-01 Environment Setup
 - BK-02 Database Design
