@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Album = require('../models/Album');
 const Order = require('../models/Order');
 const requireAuth = require('../middleware/requireAuth');
+const requireAdmin = require('../middleware/requireAdmin');
 
 const router = express.Router();
 
@@ -36,6 +37,35 @@ router.post('/', async (req, res, next) => {
 
     const order = await Order.create({ txHash, items, totalEth, shippingAddress, userId });
     res.status(201).json(order);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/orders — admin: all orders with optional filters
+router.get('/', requireAdmin, async (req, res, next) => {
+  try {
+    const { search, from, to } = req.query;
+    const filter = {};
+
+    if (search && search.trim()) {
+      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.txHash = new RegExp(escaped, 'i');
+    }
+    if (from || to) {
+      filter.createdAt = {};
+      if (from) filter.createdAt.$gte = new Date(from);
+      if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = toDate;
+      }
+    }
+
+    const orders = await Order.find(filter)
+      .populate('userId', 'email')
+      .sort({ createdAt: -1 });
+    res.json(orders);
   } catch (err) {
     next(err);
   }

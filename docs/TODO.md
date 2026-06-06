@@ -8,12 +8,6 @@
 
 ## 🟠 Высокий приоритет
 
-### Заказы в Admin Panel
-Сейчас admin видит только альбомы, но не знает кто что купил.
-- Новая вкладка / страница «Orders» в Admin Panel
-- Таблица: дата, покупатель (email или anonymous), товары, сумма ETH, txHash → Etherscan
-- Фильтр по дате и поиск по txHash
-
 ---
 
 ## 🟡 Средний приоритет
@@ -99,6 +93,7 @@
 - Цена со скидкой на странице альбома, в корзине и PaymentPage (`effectivePrice` утилита)
 - Server-side пагинация каталога — `GET /api/albums?page&limit&search&genre&sort`, «Load more», genres endpoint
 - Страница профиля `/profile` — email, адрес доставки, смена пароля; ссылка в Header
+- Заказы в Admin Panel — вкладка Orders, таблица с фильтром по дате и поиском по txHash
 
 - BK-01 Environment Setup
 - BK-02 Database Design

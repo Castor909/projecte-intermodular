@@ -723,6 +723,84 @@ nav a {
   padding-top: 8px;
 }
 
+/* ===== Admin tabs ===== */
+
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid rgba(62, 39, 35, 0.15);
+  padding: 0 32px;
+}
+
+.admin-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.admin-tab:hover {
+  opacity: 0.85;
+}
+
+.admin-tab--active {
+  opacity: 1;
+  border-bottom-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+/* ===== Admin orders table ===== */
+
+.admin-orders-date {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.admin-orders-anon {
+  color: #999;
+  font-style: italic;
+}
+
+.admin-orders-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-orders-item {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.admin-orders-txlink {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.admin-orders-txlink:hover {
+  text-decoration: underline;
+}
+
+.admin-filter-date {
+  padding: 8px 10px;
+  border: 1px solid rgba(62, 39, 35, 0.25);
+  border-radius: 6px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
 /* ===== Admin filter bar ===== */
 
 .admin-filter-bar {

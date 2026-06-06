@@ -81,6 +81,21 @@ export async function fetchDiscogsRelease(releaseId) {
   return res.json();
 }
 
+export async function fetchAdminOrders(params = {}) {
+  const clean = Object.fromEntries(
+    Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
+  );
+  const qs = new URLSearchParams(clean).toString();
+  const res = await fetch(qs ? `/api/orders?${qs}` : '/api/orders', {
+    headers: { 'x-admin-token': getToken() },
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Failed to fetch orders');
+  }
+  return res.json();
+}
+
 export async function deleteAlbum(id) {
   const res = await fetch(`/api/albums/${id}`, {
     method: 'DELETE',

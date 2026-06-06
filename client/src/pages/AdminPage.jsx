@@ -1,11 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAlbums } from '../api/albums';
-import { clearAdminToken, createAlbum, deleteAlbum, updateAlbum } from '../api/admin';
+import { clearAdminToken, createAlbum, deleteAlbum, fetchAdminOrders, updateAlbum } from '../api/admin';
 import AdminAlbumForm from '../components/AdminAlbumForm';
+
+const ETHERSCAN = 'https://etherscan.io/tx/';
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function shortHash(hash) {
+  return hash ? `${hash.slice(0, 8)}…${hash.slice(-6)}` : '—';
+}
 
 function AdminPage() {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('albums'); // 'albums' | 'orders'
+
+  // ── Albums state ──
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -15,6 +30,14 @@ function AdminPage() {
   const [saveError, setSaveError] = useState('');
   const [adminSearch, setAdminSearch] = useState('');
   const [adminGenre, setAdminGenre] = useState('all');
+
+  // ── Orders state ──
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState('');
+  const [orderSearch, setOrderSearch] = useState('');
+  const [orderFrom, setOrderFrom] = useState('');
+  const [orderTo, setOrderTo] = useState('');
 
   const loadAlbums = useCallback(() => {
     setLoading(true);
@@ -28,6 +51,19 @@ function AdminPage() {
   useEffect(() => {
     loadAlbums();
   }, [loadAlbums]);
+
+  const loadOrders = useCallback(() => {
+    setOrdersLoading(true);
+    setOrdersError('');
+    fetchAdminOrders({ search: orderSearch, from: orderFrom, to: orderTo })
+      .then(setOrders)
+      .catch((err) => setOrdersError(err.message))
+      .finally(() => setOrdersLoading(false));
+  }, [orderSearch, orderFrom, orderTo]);
+
+  useEffect(() => {
+    if (activeTab === 'orders') loadOrders();
+  }, [activeTab, loadOrders]);
 
   function handleLogout() {
     clearAdminToken();
@@ -121,8 +157,109 @@ function AdminPage() {
         </div>
       </div>
 
+      <div className="admin-tabs">
+        <button
+          className={`admin-tab${activeTab === 'albums' ? ' admin-tab--active' : ''}`}
+          onClick={() => { setActiveTab('albums'); setMode('list'); }}
+        >
+          Albums
+        </button>
+        <button
+          className={`admin-tab${activeTab === 'orders' ? ' admin-tab--active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+        >
+          Orders
+        </button>
+      </div>
+
       <div className="admin-content">
-        {mode !== 'list' ? (
+        {activeTab === 'orders' ? (
+          <>
+            <div className="admin-list-header">
+              <h2 style={{ margin: 0 }}>Orders ({orders.length})</h2>
+            </div>
+
+            <div className="admin-filter-bar">
+              <input
+                type="search"
+                value={orderSearch}
+                onChange={(e) => setOrderSearch(e.target.value)}
+                placeholder="Search by tx hash…"
+                className="admin-filter-search"
+              />
+              <input
+                type="date"
+                value={orderFrom}
+                onChange={(e) => setOrderFrom(e.target.value)}
+                className="admin-filter-date"
+                title="From date"
+              />
+              <input
+                type="date"
+                value={orderTo}
+                onChange={(e) => setOrderTo(e.target.value)}
+                className="admin-filter-date"
+                title="To date"
+              />
+              {(orderSearch || orderFrom || orderTo) && (
+                <button
+                  className="btn-secondary admin-btn-small"
+                  onClick={() => { setOrderSearch(''); setOrderFrom(''); setOrderTo(''); }}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {ordersLoading && <p>Loading orders…</p>}
+            {ordersError && <p className="notice warning">{ordersError}</p>}
+
+            {!ordersLoading && !ordersError && (
+              <div className="admin-table-wrapper">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Buyer</th>
+                      <th>Items</th>
+                      <th>Total ETH</th>
+                      <th>Tx hash</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.length === 0 ? (
+                      <tr><td colSpan={5} className="admin-empty">No orders yet.</td></tr>
+                    ) : orders.map((order) => (
+                      <tr key={order._id}>
+                        <td className="admin-orders-date">{formatDate(order.createdAt)}</td>
+                        <td>{order.userId?.email ?? <span className="admin-orders-anon">anonymous</span>}</td>
+                        <td className="admin-orders-items">
+                          {order.items.map((it, i) => (
+                            <span key={i} className="admin-orders-item">
+                              {it.title} ×{it.qty}
+                            </span>
+                          ))}
+                        </td>
+                        <td>{order.totalEth?.toFixed(3)} ETH</td>
+                        <td>
+                          <a
+                            href={`${ETHERSCAN}${order.txHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="admin-orders-txlink"
+                            title={order.txHash}
+                          >
+                            {shortHash(order.txHash)}
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        ) : mode !== 'list' ? (
           <>
             <button className="btn-secondary" style={{ marginBottom: 24 }} onClick={handleCancel}>
               ← Back to list
