@@ -31,6 +31,11 @@ function AdminPage() {
   const [adminSearch, setAdminSearch] = useState('');
   const [adminGenre, setAdminGenre] = useState('all');
 
+  // ── Batch selection state ──
+  const [selected, setSelected] = useState(new Set());
+  const [discountInput, setDiscountInput] = useState('');
+  const [batchWorking, setBatchWorking] = useState(false);
+
   // ── Stats state ──
   const [stats, setStats] = useState(null);
 
@@ -68,6 +73,80 @@ function AdminPage() {
   useEffect(() => {
     if (activeTab === 'orders') loadOrders();
   }, [activeTab, loadOrders]);
+
+  useEffect(() => {
+    setSelected(new Set());
+  }, [adminSearch, adminGenre]);
+
+  // ── Batch helpers ──
+  function toggleSelect(id) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (visibleAlbums.length > 0 && visibleAlbums.every((a) => selected.has(a._id))) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(visibleAlbums.map((a) => a._id)));
+    }
+  }
+
+  async function handleBatchUpdate(payload) {
+    setBatchWorking(true);
+    try {
+      const results = await Promise.all([...selected].map((id) => updateAlbum(id, payload)));
+      const map = Object.fromEntries(results.map((a) => [a._id, a]));
+      setAlbums((prev) => prev.map((a) => map[a._id] ?? a));
+      setSelected(new Set());
+    } catch (err) {
+      if (err.message.toLowerCase().includes('unauthorized')) { handleUnauthorized(); return; }
+      alert(`Batch update failed: ${err.message}`);
+    } finally {
+      setBatchWorking(false);
+    }
+  }
+
+  async function handleBatchSetDiscount() {
+    const pct = parseInt(discountInput, 10);
+    if (isNaN(pct) || pct < 0 || pct > 100) { alert('Enter a number between 0 and 100.'); return; }
+    await handleBatchUpdate({ discountPercent: pct });
+    setDiscountInput('');
+  }
+
+  async function handleBatchToggleFeatured() {
+    setBatchWorking(true);
+    try {
+      const targets = albums.filter((a) => selected.has(a._id));
+      const results = await Promise.all(targets.map((a) => updateAlbum(a._id, { featured: !a.featured })));
+      const map = Object.fromEntries(results.map((a) => [a._id, a]));
+      setAlbums((prev) => prev.map((a) => map[a._id] ?? a));
+      setSelected(new Set());
+    } catch (err) {
+      if (err.message.toLowerCase().includes('unauthorized')) { handleUnauthorized(); return; }
+      alert(`Batch update failed: ${err.message}`);
+    } finally {
+      setBatchWorking(false);
+    }
+  }
+
+  async function handleBatchDelete() {
+    if (!window.confirm(`Delete ${selected.size} album(s)? This cannot be undone.`)) return;
+    setBatchWorking(true);
+    try {
+      await Promise.all([...selected].map((id) => deleteAlbum(id)));
+      setAlbums((prev) => prev.filter((a) => !selected.has(a._id)));
+      setSelected(new Set());
+    } catch (err) {
+      if (err.message.toLowerCase().includes('unauthorized')) { handleUnauthorized(); return; }
+      alert(`Batch delete failed: ${err.message}`);
+    } finally {
+      setBatchWorking(false);
+    }
+  }
 
   function handleLogout() {
     clearAdminToken();
@@ -354,11 +433,53 @@ function AdminPage() {
             {loading && <p>Loading albums...</p>}
             {fetchError && <p className="notice warning">{fetchError}</p>}
 
+            {!loading && !fetchError && selected.size > 0 && (
+              <div className="admin-batch-bar">
+                <span className="admin-batch-count">{selected.size} selected</span>
+                <div className="admin-batch-actions">
+                  <div className="admin-batch-group">
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={discountInput}
+                      onChange={(e) => setDiscountInput(e.target.value)}
+                      placeholder="%"
+                      className="admin-batch-discount-input"
+                    />
+                    <button className="btn-secondary admin-btn-small" onClick={handleBatchSetDiscount} disabled={batchWorking}>
+                      Set discount
+                    </button>
+                  </div>
+                  <button className="btn-secondary admin-btn-small" onClick={() => handleBatchUpdate({ discountPercent: 0 })} disabled={batchWorking}>
+                    Clear discount
+                  </button>
+                  <button className="btn-secondary admin-btn-small" onClick={handleBatchToggleFeatured} disabled={batchWorking}>
+                    Toggle featured
+                  </button>
+                  <button className="admin-btn-delete admin-btn-small" onClick={handleBatchDelete} disabled={batchWorking}>
+                    Delete
+                  </button>
+                  <button className="btn-secondary admin-btn-small" onClick={() => setSelected(new Set())} disabled={batchWorking}>
+                    Deselect all
+                  </button>
+                </div>
+              </div>
+            )}
+
             {!loading && !fetchError && (
               <div className="admin-table-wrapper">
                 <table className="admin-table">
                   <thead>
                     <tr>
+                      <th style={{ width: 36 }}>
+                        <input
+                          type="checkbox"
+                          checked={visibleAlbums.length > 0 && visibleAlbums.every((a) => selected.has(a._id))}
+                          onChange={toggleSelectAll}
+                          aria-label="Select all"
+                        />
+                      </th>
                       <th>Cover</th>
                       <th>Title</th>
                       <th>Artist</th>
@@ -372,7 +493,15 @@ function AdminPage() {
                   </thead>
                   <tbody>
                     {visibleAlbums.map((album) => (
-                      <tr key={album._id}>
+                      <tr key={album._id} className={selected.has(album._id) ? 'admin-row--selected' : ''}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selected.has(album._id)}
+                            onChange={() => toggleSelect(album._id)}
+                            aria-label={`Select ${album.title}`}
+                          />
+                        </td>
                         <td>
                           <img
                             src={album.coverUrl}

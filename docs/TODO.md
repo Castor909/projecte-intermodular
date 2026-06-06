@@ -16,12 +16,6 @@
 
 ## 🟢 Низкий приоритет
 
-### Массовые операции в Admin Panel
-При 350 альбомах редактировать по одному неудобно.
-- Чекбоксы в таблице, кнопка «Select all»
-- Batch actions: установить скидку X% / сбросить скидку / удалить / переключить featured
-- Подтверждение перед деструктивными операциями
-
 ### CSV-экспорт каталога из Admin Panel
 - Кнопка «Export CSV» скачивает текущую таблицу (с учётом фильтра)
 - Поля: title, artist, year, genre, priceEth, discountPercent, stock, featured
@@ -62,6 +56,7 @@
 - Статистика в Admin Panel — карточки (albums/out of stock/on sale/orders/ETH), топ-5 продаваемых
 - Wishlist — WishlistContext/localStorage, ♡ на AlbumCard и DetailPage, /wishlist, badge в Header
 - Recently viewed — localStorage (макс. 6), запись при загрузке /album/:id, секция внизу каталога
+- Массовые операции в Admin Panel — чекбоксы, select all, batch bar: скидка/сброс/featured/delete
 
 - BK-01 Environment Setup
 - BK-02 Database Design
