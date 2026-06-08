@@ -2,10 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../useAuth';
 import { useWishlist } from '../useWishlist';
+import { useCart } from '../useCart';
 
 function Header() {
   const { user, logout } = useAuth();
   const { wishlist } = useWishlist();
+  const { cart } = useCart();
+  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const [walletState, setWalletState] = useState('idle');
   const [walletAddress, setWalletAddress] = useState('');
   const [walletError, setWalletError] = useState('');
@@ -124,7 +127,9 @@ function Header() {
       <div className="logo">VinylEth</div>
       <nav>
         <Link to="/">Catalog</Link>
-        <Link to="/cart">Cart</Link>
+        <Link to="/cart" className="nav-wishlist">
+          Cart{cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
+        </Link>
         <Link to="/wishlist" className="nav-wishlist">
           Wishlist{wishlist.length > 0 && <span className="nav-badge">{wishlist.length}</span>}
         </Link>
