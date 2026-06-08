@@ -7,7 +7,7 @@ import { SkeletonCard } from '../components/SkeletonCard';
 import { fetchAlbums, fetchGenres } from '../api/albums';
 import { useDebounce } from '../useDebounce';
 
-const LIMIT = 24;
+const LIMIT = 5;
 
 function transformAlbum(album) {
   return {
