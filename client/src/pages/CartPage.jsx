@@ -40,7 +40,7 @@ function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartN
                   )}
                   {(effectivePrice(item) * item.qty).toFixed(3)} ETH
                 </span>
-                <button onClick={() => onRemove(item._id)}>Remove</button>
+                <button className="btn-secondary" onClick={() => onRemove(item._id)}>Remove</button>
               </li>
             ))}
           </ul>
