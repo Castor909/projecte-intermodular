@@ -53,7 +53,7 @@ function AlbumDetailPage({ onAddToCart, cartNotice, onClearNotice }) {
 
   return (
     <div className="album-detail" style={{ padding: 40 }}>
-      <button onClick={() => navigate(-1)} style={{ marginBottom: 20 }}>← Back</button>
+      <button className="btn-secondary" onClick={() => navigate(-1)} style={{ marginBottom: 20 }}>← Back</button>
       <div style={{ display: 'flex', gap: 40 }}>
         <img
           src={album.coverUrl}

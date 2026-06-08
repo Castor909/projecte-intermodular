@@ -48,7 +48,7 @@ function CartPage({ cart, onRemove, onIncreaseQty, onDecreaseQty, onClear, cartN
             <b>Total: {total.toFixed(3)} ETH</b>
           </div>
           <div className="cart-actions">
-            <button onClick={() => { onClear(); onClearNotice(); }}>Clear Cart</button>
+            <button className="btn-secondary" onClick={() => { onClear(); onClearNotice(); }}>Clear Cart</button>
             <button className="btn-connect btn-large" onClick={() => navigate('/checkout/shipping')}>
               Proceed to Checkout →
             </button>
