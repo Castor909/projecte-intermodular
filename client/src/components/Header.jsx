@@ -153,10 +153,7 @@ function Header() {
       </div>
       <div className="wallet-box">
         {isConnected ? (
-          <>
-            <span className="wallet-badge">{walletLabel}</span>
-            <button className="btn-connect" onClick={disconnectWallet}>Disconnect</button>
-          </>
+          <span className="wallet-badge">{walletLabel}</span>
         ) : (
           <button
             className="btn-connect"
