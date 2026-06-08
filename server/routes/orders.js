@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
     for (const item of items) {
       await Album.findByIdAndUpdate(item.albumId, [
         { $set: { stock: { $max: [0, { $subtract: ['$stock', item.qty] }] } } },
-      ]);
+      ], { updatePipeline: true });
     }
 
     const totalEth = items.reduce((sum, i) => sum + i.priceEth * i.qty, 0);

@@ -8,6 +8,7 @@ function getClient() {
 
 async function sendOrderReceipt({ to, txHash, items, totalEth, shippingAddress }) {
   if (!process.env.RESEND_API_KEY) return;
+  const recipient = process.env.RECEIPT_EMAIL || to;
 
   const itemRows = items
     .map((i) => `<tr>
@@ -59,7 +60,7 @@ async function sendOrderReceipt({ to, txHash, items, totalEth, shippingAddress }
 
   await getClient().emails.send({
     from: 'VinylEth <onboarding@resend.dev>',
-    to,
+    to: recipient,
     subject: 'Your VinylEth order is confirmed',
     html,
   });
