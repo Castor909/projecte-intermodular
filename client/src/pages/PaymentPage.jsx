@@ -101,6 +101,7 @@ function PaymentPage() {
           priceEth: effectivePrice(item),
         })),
         shippingAddress: shipping,
+        email: shipping?.email || null,
       }).catch(() => {});
 
       clearCart();

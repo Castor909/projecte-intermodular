@@ -4,12 +4,13 @@ const Album = require('../models/Album');
 const Order = require('../models/Order');
 const requireAuth = require('../middleware/requireAuth');
 const requireAdmin = require('../middleware/requireAdmin');
+const { sendOrderReceipt } = require('../utils/mailer');
 
 const router = express.Router();
 
 // POST /api/orders — confirm payment, decrement stock, save order
 router.post('/', async (req, res, next) => {
-  const { txHash, items, shippingAddress } = req.body;
+  const { txHash, items, shippingAddress, email } = req.body;
 
   if (!txHash || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: 'txHash and items are required' });
@@ -36,6 +37,12 @@ router.post('/', async (req, res, next) => {
     const totalEth = items.reduce((sum, i) => sum + i.priceEth * i.qty, 0);
 
     const order = await Order.create({ txHash, items, totalEth, shippingAddress, userId });
+
+    // Send receipt email (best-effort, non-blocking)
+    if (email) {
+      sendOrderReceipt({ to: email, txHash, items, totalEth, shippingAddress }).catch(() => {});
+    }
+
     res.status(201).json(order);
   } catch (err) {
     next(err);

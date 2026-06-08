@@ -11,6 +11,7 @@ const EMPTY_FORM = {
   city: '',
   postalCode: '',
   country: '',
+  email: '',
 };
 
 function loadSaved() {
@@ -27,11 +28,10 @@ function ShippingPage() {
   const { user, token, updateUser } = useAuth();
 
   const [form, setForm] = useState(() => {
-    // User profile address takes priority over localStorage
-    if (user?.savedAddress?.fullName) {
-      return { ...EMPTY_FORM, ...user.savedAddress };
-    }
-    return loadSaved();
+    const base = user?.savedAddress?.fullName
+      ? { ...EMPTY_FORM, ...user.savedAddress }
+      : loadSaved();
+    return { ...base, email: base.email || user?.email || '' };
   });
   const [errors, setErrors] = useState({});
 
@@ -48,6 +48,8 @@ function ShippingPage() {
     if (!form.city.trim()) next.city = 'Required';
     if (!form.postalCode.trim()) next.postalCode = 'Required';
     if (!form.country.trim()) next.country = 'Required';
+    if (!form.email.trim()) next.email = 'Required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = 'Invalid email';
     return next;
   }
 
@@ -91,6 +93,12 @@ function ShippingPage() {
           <label htmlFor="fullName">Full name</label>
           <input id="fullName" name="fullName" type="text" value={form.fullName} onChange={handleChange} autoComplete="name" />
           {errors.fullName && <span className="field-error">{errors.fullName}</span>}
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" type="email" value={form.email} onChange={handleChange} autoComplete="email" />
+          {errors.email && <span className="field-error">{errors.email}</span>}
         </div>
 
         <div className="form-field">
