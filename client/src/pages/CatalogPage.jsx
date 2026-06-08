@@ -30,7 +30,7 @@ function CatalogPage() {
   const [genreFilter, setGenreFilter] = useState('all');
   const [sortMode, setSortMode] = useState('featured');
 
-  const debouncedSearch = useDebounce(searchTerm, 250);
+  const debouncedSearch = useDebounce(searchTerm, 1000);
   const abortRef = useRef(null);
 
   useEffect(() => {
