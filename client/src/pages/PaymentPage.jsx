@@ -75,6 +75,11 @@ function PaymentPage() {
     try {
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
       const from = accounts[0];
+
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0xaa36a7' }], // Sepolia
+      });
       const value = ethToHexWei(total);
 
       const hash = await provider.request({
