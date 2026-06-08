@@ -75,7 +75,7 @@
 | 37 | TX hash display after payment | `[x]` | `PaymentPage.jsx` |
 | 38 | Etherscan link for TX hash | `[x]` | `PaymentPage.jsx` |
 | 39 | Cart cleared after successful payment | `[x]` | `PaymentPage.jsx` (calls `clearCart()`) |
-| 40 | STORE_WALLET address configured | `[~]` | `config/payment.js` — **value is empty string** |
+| 40 | STORE_WALLET address configured | `[x]` | `config/payment.js` — `0x06c630497F14FB4eef9f620599448d6b0efa192a` |
 
 ---
 
