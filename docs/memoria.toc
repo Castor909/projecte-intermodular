@@ -1,0 +1,40 @@
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Objectives}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Initial Objectives}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Final State vs.\ Initial Goals}{4}{section.2.2}%
+\contentsline {chapter}{\numberline {3}Technologies Used}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Core Stack}{6}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Authentication and Security}{6}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Payments and Web3}{6}{section.3.3}%
+\contentsline {section}{\numberline {3.4}External API Integrations}{7}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Email}{7}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Additional Tools}{7}{section.3.6}%
+\contentsline {chapter}{\numberline {4}Architecture and Structure}{8}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Overview}{8}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Data Models}{8}{section.4.2}%
+\contentsline {section}{\numberline {4.3}API Endpoints}{9}{section.4.3}%
+\contentsline {section}{\numberline {4.4}State Management}{10}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Implemented Functionality}{11}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Catalog and Product Browsing}{11}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Shopping Cart}{11}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Wishlist}{12}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Checkout Flow}{12}{section.5.4}%
+\contentsline {section}{\numberline {5.5}User Authentication}{12}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Admin Panel}{13}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Audio Player}{13}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Progressive Web App}{13}{section.5.8}%
+\contentsline {chapter}{\numberline {6}Problems Encountered and Solutions}{14}{chapter.6}%
+\contentsline {section}{\numberline {6.1}MongoDB crash on the development machine}{14}{section.6.1}%
+\contentsline {section}{\numberline {6.2}React fast-refresh lint error on CartContext}{14}{section.6.2}%
+\contentsline {section}{\numberline {6.3}ETH-to-Wei conversion precision loss}{14}{section.6.3}%
+\contentsline {section}{\numberline {6.4}React hook warning in wallet detection effect}{15}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Discogs API rate limiting in development}{15}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Anonymous orders and JWT auth boundary}{15}{section.6.6}%
+\contentsline {chapter}{\numberline {7}Project Evolution}{16}{chapter.7}%
+\contentsline {section}{\numberline {7.1}UD1A — Initial Setup}{16}{section.7.1}%
+\contentsline {section}{\numberline {7.2}UD1B — Backend Integration and Cart}{16}{section.7.2}%
+\contentsline {section}{\numberline {7.3}UD2A — Wallet UX, Search, and Error Contracts}{16}{section.7.3}%
+\contentsline {section}{\numberline {7.4}UD3 — Complete Application}{17}{section.7.4}%
+\contentsline {chapter}{\numberline {8}Conclusions and Future Improvements}{18}{chapter.8}%
+\contentsline {section}{\numberline {8.1}What Was Achieved}{18}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Possible Future Improvements}{18}{section.8.2}%
