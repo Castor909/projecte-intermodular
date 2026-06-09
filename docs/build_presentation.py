@@ -116,20 +116,20 @@ def s_title(prs):
     txt(s, "VinylEth", 0.35, 1.2, 9, 1.7,
         size=82, color=ORANGE, bold=True)
     hrule(s, 0.35, 3.1, 7.5, color=CREAM, h=0.018)
-    txt(s, "Final Project Report", 0.35, 3.25, 9, 0.75,
+    txt(s, "Informe Final del Proyecto", 0.35, 3.25, 9, 0.75,
         size=28, color=CREAM)
-    txt(s, "Intermodular Project UD3  ·  CIFP Francesc de Borja Moll",
+    txt(s, "Projecte Intermodular UD3  ·  CIFP Francesc de Borja Moll",
         0.35, 4.05, 10, 0.5, size=15, color=DIM)
     txt(s, "Stepan Andreev", 0.35, 5.2, 6, 0.5,
         size=20, color=CREAM, bold=True)
-    txt(s, "June 2026  ·  github.com/Castor909/projecte-intermodular",
+    txt(s, "Junio 2026  ·  github.com/Castor909/projecte-intermodular",
         0.35, 5.75, 10, 0.4, size=13, color=DIM)
 
     # Right info block
     for i, (label, value) in enumerate([
         ("Stack",    "MERN"),
-        ("Payments", "Ethereum / MetaMask"),
-        ("Network",  "Sepolia testnet"),
+        ("Pagos",    "Ethereum / MetaMask"),
+        ("Red",      "Sepolia testnet"),
         ("APIs",     "Discogs · iTunes · Resend"),
     ]):
         y = 1.5 + i * 1.3
@@ -143,20 +143,20 @@ def s_title(prs):
 
 def s_idea(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "The Project")
+    slide_header(s, "El Proyecto")
 
     txt(s,
-        "VinylEth is an online vinyl record store where customers "
-        "pay with Ethereum through MetaMask — no traditional "
-        "payment processor required.",
+        "VinylEth es una tienda online de vinilos donde los clientes "
+        "pagan con Ethereum a traves de MetaMask, sin necesidad de "
+        "procesadores de pago tradicionales.",
         0.35, 1.2, 6.3, 1.3, size=19, color=CREAM)
 
     bullets(s, [
-        "Vinyl revival: 45M records sold in 2023",
-        "Target niche: vinyl fans + Web3 users",
-        "Privacy-first: no credit cards, no banks",
-        "Full e-commerce flow: browse → cart → crypto payment",
-        "Real on-chain transaction on Sepolia testnet",
+        "El vinilo ha vuelto: 45 millones de discos vendidos en 2023",
+        "Nicho objetivo: amantes del vinilo + usuarios Web3",
+        "Privacidad: sin tarjetas de credito, sin bancos",
+        "Flujo e-commerce completo: catalogo → carrito → pago crypto",
+        "Transaccion real en la red de pruebas Sepolia",
     ], 0.35, 2.65, 6.3, 3.5, size=17)
 
     img(s, os.path.join(SS, "featured_album_and_special_offers.png"),
@@ -165,17 +165,17 @@ def s_idea(prs):
 
 def s_stack(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Tech Stack")
+    slide_header(s, "Tecnologias")
 
     cards = [
-        ("React 19  +  React Router 7", "Frontend SPA (Vite build tool)",        ORANGE),
-        ("Node.js  +  Express 5",        "REST API backend",                       GOLD),
-        ("MongoDB  +  Mongoose 9",       "NoSQL document database",                ORANGE),
-        ("JWT  +  bcrypt",               "Stateless auth · password hashing",      GOLD),
-        ("MetaMask  (window.ethereum)",  "Ethereum payments — no extra lib",       ORANGE),
-        ("Discogs API  +  iTunes API",   "Album metadata · audio previews",        GOLD),
-        ("Resend",                       "Transactional email receipts",            ORANGE),
-        ("PWA Manifest",                 "Add to Home Screen on mobile",            GOLD),
+        ("React 19  +  React Router 7", "SPA frontend (Vite)",                        ORANGE),
+        ("Node.js  +  Express 5",        "API REST backend",                           GOLD),
+        ("MongoDB  +  Mongoose 9",       "Base de datos NoSQL",                        ORANGE),
+        ("JWT  +  bcrypt",               "Autenticacion stateless · hash contrasenas", GOLD),
+        ("MetaMask  (window.ethereum)",  "Pagos Ethereum — sin librerias extra",       ORANGE),
+        ("Discogs API  +  iTunes API",   "Metadatos de albumes · previews de audio",   GOLD),
+        ("Resend",                       "Recibos de pedido por correo",               ORANGE),
+        ("PWA Manifest",                 "Instalable en movil",                        GOLD),
     ]
 
     for i, (title, desc, accent) in enumerate(cards):
@@ -191,65 +191,65 @@ def s_stack(prs):
 
 def s_architecture(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Architecture")
+    slide_header(s, "Arquitectura")
     img(s, os.path.join(DOCS, "architecture.png"), 0.35, 1.15, 12.6)
 
 
 def s_catalog(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Catalog & Browsing")
+    slide_header(s, "Catalogo y Navegacion")
 
     img(s, os.path.join(SS, "search_catalogue.png"),
         0.35, 1.15, 7.8)
 
     bullets(s, [
-        "Real-time search — 250ms debounce",
-        "Genre filter fetched from database",
-        "8 sort options (price, year, stock…)",
-        "Pagination via Load more",
-        "Stock badges — Out of Stock / Last Copies",
+        "Busqueda en tiempo real — debounce 250ms",
+        "Filtro por genero obtenido de la base de datos",
+        "8 opciones de ordenacion (precio, año, stock...)",
+        "Paginacion con boton Cargar mas",
+        "Badges de stock — Sin stock / Ultimas copias",
         "Skeleton loading cards",
-        "Recently viewed shelf (localStorage)",
+        "Vistos recientemente (localStorage)",
     ], 8.4, 1.25, 4.7, 5.8, size=16)
 
 
 def s_detail(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Album Detail & Audio Preview")
+    slide_header(s, "Detalle de Album y Vista Previa")
 
     img(s, os.path.join(SS, "album_preview.png"),
         0.35, 1.15, 7.8)
 
     bullets(s, [
-        "Full metadata (label, country, format)",
-        "Tracklist with individual durations",
-        "Custom HTML5 audio player",
-        "  · Play/pause, seek bar, buffering",
-        "  · iTunes 30-second preview URL",
-        "Similar albums (same genre, 4 items)",
-        "Add to cart / wishlist toggle",
+        "Metadatos completos (sello, pais, formato)",
+        "Tracklist con duraciones individuales",
+        "Reproductor HTML5 personalizado",
+        "  · Play/pausa, barra de progreso, buffering",
+        "  · Preview de 30 segundos via iTunes",
+        "Albumes similares (mismo genero, 4 items)",
+        "Anadir al carrito / toggle de lista de deseos",
     ], 8.4, 1.25, 4.7, 5.8, size=16)
 
 
 def s_payment(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Checkout & MetaMask Payment")
+    slide_header(s, "Proceso de Pago con MetaMask")
 
     img(s, os.path.join(SS, "payment_process.png"),
         0.35, 1.15, 7.8)
 
-    txt(s, "3-step flow:", 8.4, 1.25, 4.7, 0.45,
+    txt(s, "Flujo en 3 pasos:", 8.4, 1.25, 4.7, 0.45,
         size=16, color=GOLD, bold=True)
 
     steps = [
-        "Cart  →  Shipping form  →  Payment",
-        "Shipping address auto-filled from profile",
-        "Chain switch to Sepolia (0xaa36a7)",
+        "Carrito  →  Envio  →  Pago",
+        "Direccion de envio prellenada desde perfil",
+        "Cambio de red a Sepolia (0xaa36a7)",
         "eth_sendTransaction via MetaMask",
-        "ETH → Wei via BigInt (no float errors)",
-        "TX hash + Etherscan link on confirm",
-        "Order saved to DB  +  email receipt sent",
-        "Cart cleared automatically",
+        "ETH → Wei con BigInt (sin errores de redondeo)",
+        "Hash TX + enlace a Etherscan al confirmar",
+        "Pedido guardado en BD  +  recibo por email",
+        "Carrito vaciado automaticamente",
     ]
     bullets(s, steps, 8.4, 1.75, 4.7, 5.3,
             size=15, prefix="→  ")
@@ -257,42 +257,42 @@ def s_payment(prs):
 
 def s_admin(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Admin Panel")
+    slide_header(s, "Panel de Administracion")
 
     img(s, os.path.join(SS, "admin_panel.png"),
         0.35, 1.15, 7.8)
 
     bullets(s, [
-        "Dashboard: albums, orders, revenue, top sellers",
-        "Album CRUD — full form",
-        "Quick Discogs import (release ID → all fields)",
-        "iTunes audio preview auto-fill",
-        "Batch: discount %, featured flag, delete",
-        "CSV export of album catalog",
-        "Order search by TX hash + date range",
-        "Separate password auth (x-admin-token)",
+        "Dashboard: albumes, pedidos, ingresos, top ventas",
+        "CRUD de albumes — formulario completo",
+        "Importacion rapida de Discogs (ID → todos los campos)",
+        "Autorellenado de preview de audio desde iTunes",
+        "Operaciones en lote: descuento %, destacado, eliminar",
+        "Exportacion CSV del catalogo de albumes",
+        "Busqueda de pedidos por hash TX + rango de fechas",
+        "Autenticacion separada por contrasena (x-admin-token)",
     ], 8.4, 1.25, 4.7, 5.8, size=15)
 
 
 def s_problems(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Problems & Solutions")
+    slide_header(s, "Problemas y Soluciones")
 
     problems = [
         (
-            "MongoDB SIGSEGV crash on development machine",
-            "Native mongodb-bin 8.2.7 crashed at startup on Arch Linux.",
-            "Docker mongo:7 — stable DB, zero code changes needed.",
+            "MongoDB se bloqueaba con SIGSEGV en la maquina de desarrollo",
+            "mongodb-bin 8.2.7 nativo crasheaba al arrancar en Arch Linux.",
+            "Docker mongo:7 — BD estable sin cambios en el codigo.",
         ),
         (
-            "ETH → Wei floating-point precision loss",
-            "amount * 1e18 produced rounding errors for values like 0.015 ETH.",
-            "BigInt arithmetic: split at decimal point, scale each part independently.",
+            "Perdida de precision al convertir ETH → Wei con coma flotante",
+            "amount * 1e18 producia errores de redondeo para valores como 0.015 ETH.",
+            "Aritmetica BigInt: separar en parte entera y decimal, escalar cada una.",
         ),
         (
-            "ESLint: CartContext exported provider + hook in same file",
-            "React fast-refresh plugin rejected mixed exports.",
-            "Split into useCart.js + cartContextValue.js — also improved SoC.",
+            "ESLint: CartContext exportaba provider y hook en el mismo archivo",
+            "El plugin React fast-refresh rechazaba las exportaciones mixtas.",
+            "Separado en useCart.js + cartContextValue.js — mejora tambien la SoC.",
         ),
     ]
 
@@ -310,28 +310,28 @@ def s_problems(prs):
 
 def s_evolution(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "Project Evolution")
+    slide_header(s, "Evolucion del Proyecto")
 
     phases = [
-        ("UD1A", "Initial Setup", [
-            "React + mock catalog",
-            "Express skeleton",
-            "Design system defined",
+        ("UD1A", "Configuracion Inicial", [
+            "React + catalogo simulado",
+            "Esqueleto de Express",
+            "Sistema de diseno definido",
         ]),
-        ("UD1B", "Backend + Cart", [
-            "MongoDB + Album model",
-            "REST API (albums list & detail)",
-            "Cart with localStorage",
+        ("UD1B", "Backend + Carrito", [
+            "MongoDB + modelo Album",
+            "API REST (lista y detalle)",
+            "Carrito con localStorage",
         ]),
-        ("UD2A", "Wallet + Search", [
-            "MetaMask connect in header",
-            "Cart quantity controls",
-            "Catalog search, filter, sort",
+        ("UD2A", "Wallet + Busqueda", [
+            "Conexion MetaMask en header",
+            "Controles de cantidad en carrito",
+            "Busqueda, filtro y orden en catalogo",
         ]),
-        ("UD3", "Complete App", [
-            "Full payment flow + orders",
-            "JWT auth + admin panel",
-            "Email, wishlist, PWA",
+        ("UD3", "App Completa", [
+            "Flujo de pago completo + pedidos",
+            "Auth JWT + panel de admin",
+            "Email, lista de deseos, PWA",
         ]),
     ]
 
@@ -364,14 +364,14 @@ def s_evolution(prs):
 
 def s_conclusions(prs):
     s = blank(prs); set_bg(s)
-    slide_header(s, "What Was Achieved")
+    slide_header(s, "Logros Obtenidos")
 
     # Stats row
     stats = [
-        ("111", "features implemented"),
-        ("17",  "API endpoints"),
-        ("3",   "external APIs"),
-        ("4",   "dev phases"),
+        ("111", "funcionalidades"),
+        ("17",  "endpoints API"),
+        ("3",   "APIs externas"),
+        ("4",   "fases de desarrollo"),
     ]
     for i, (num, label) in enumerate(stats):
         x = 0.35 + i * 3.15
@@ -382,22 +382,22 @@ def s_conclusions(prs):
             size=14, color=DIM, align=PP_ALIGN.CENTER)
 
     # Two columns
-    txt(s, "Delivered", 0.35, 2.95, 6.2, 0.45,
+    txt(s, "Entregado", 0.35, 2.95, 6.2, 0.45,
         size=18, color=GOLD, bold=True)
     bullets(s, [
-        "Full e-commerce flow: browse → cart → crypto payment",
-        "Ethereum payments via MetaMask on Sepolia testnet",
-        "Production-grade admin panel with Discogs import",
-        "JWT auth, order history, email receipts via Resend",
+        "Flujo e-commerce completo: catalogo → carrito → pago crypto",
+        "Pagos Ethereum via MetaMask en la red Sepolia",
+        "Panel de administracion con importacion desde Discogs",
+        "Auth JWT, historial de pedidos, recibos por email via Resend",
     ], 0.35, 3.48, 6.2, 2.8, size=16)
 
-    txt(s, "Future improvements", 6.75, 2.95, 6.2, 0.45,
+    txt(s, "Mejoras futuras", 6.75, 2.95, 6.2, 0.45,
         size=18, color=GOLD, bold=True)
     bullets(s, [
-        "Solidity escrow contract (buyer protection)",
-        "Stock reservation during checkout",
-        "Image upload via Cloudinary",
-        "Automated test suite — Vitest + Jest + Supertest",
+        "Contrato Solidity de custodia (proteccion al comprador)",
+        "Reserva de stock durante el checkout",
+        "Subida de imagenes via Cloudinary",
+        "Suite de tests automatizados — Vitest + Jest + Supertest",
     ], 6.75, 3.48, 6.2, 2.8, size=16, color=DIM)
 
 
@@ -405,14 +405,14 @@ def s_thankyou(prs):
     s = blank(prs); set_bg(s)
     accent_bar(s)
 
-    txt(s, "Thank you.", 0.35, 1.6, 10, 1.7,
+    txt(s, "Gracias.", 0.35, 1.6, 10, 1.7,
         size=78, color=CREAM, bold=True)
     hrule(s, 0.35, 3.5, 8.5, color=ORANGE, h=0.025)
-    txt(s, "Questions?", 0.35, 3.7, 8, 0.9,
+    txt(s, "Preguntas?", 0.35, 3.7, 8, 0.9,
         size=38, color=ORANGE)
     txt(s, "github.com/Castor909/projecte-intermodular",
         0.35, 5.1, 10, 0.5, size=18, color=DIM)
-    txt(s, "Stepan Andreev  ·  Projecte Intermodular UD3  ·  June 2026",
+    txt(s, "Stepan Andreev  ·  Projecte Intermodular UD3  ·  Junio 2026",
         0.35, 5.7, 10, 0.4, size=13, color=DIM)
 
 
