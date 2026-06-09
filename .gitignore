@@ -3,4 +3,9 @@ node_modules
 .DS_Store
 dist
 build
-docs/TEMP_UD1B_COMMIT_REFERENCE_EN.md
+
+# LaTeX build artifacts
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.toc
