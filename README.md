@@ -114,7 +114,7 @@ Edit `server/.env` and fill in the required values (see `.env.example` for descr
 
 ```bash
 cd server
-node seed/seed.js
+node seed/seedAlbums.js
 ```
 
 ### 4. Start the application
