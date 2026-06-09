@@ -90,8 +90,22 @@ projecte-intermodular/
 
 ### Prerequisites
 - Node.js v20.19+
-- MongoDB running locally, or a MongoDB Atlas URI
+- MongoDB (via Docker — see step below)
 - MetaMask browser extension (for payment testing)
+
+### 0. Start MongoDB
+
+The recommended way is Docker (avoids native MongoDB compatibility issues on some Linux distros):
+
+```bash
+docker run -d --name mongo -p 27017:27017 --restart unless-stopped mongo:7
+```
+
+If the container already exists from a previous run:
+
+```bash
+docker start mongo
+```
 
 ### 1. Clone and install dependencies
 

@@ -23,7 +23,7 @@
 \setlength{\parskip}{6pt}
 
 % --- Colours ---
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \definecolor{accent}{HTML}{2C4A7C}
 \definecolor{lightgray}{HTML}{F5F5F5}
 \definecolor{tablegray}{HTML}{E8ECF2}
@@ -76,7 +76,26 @@
 
 % --- Code listings ---
 \usepackage{listings}
+\lstdefinelanguage{JavaScript}{
+  keywords={const,let,var,function,return,if,else,export,import,from,async,
+             await,try,catch,new,class,extends,this,typeof,true,false,null,
+             undefined,of,for,while,do,switch,case,break,default,throw,module,
+             require},
+  keywordstyle=\color{accent}\bfseries,
+  ndkeywords={BigInt,Math,Number,String,Array,Object,Promise,parseInt,
+              parseFloat,isFinite,localStorage,window,document,console},
+  ndkeywordstyle=\color{codered},
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{codegreen},
+  morestring=[b]',
+  morestring=[b]",
+  morestring=[b]`,
+  sensitive=true,
+}
 \lstset{
+  language=JavaScript,
   basicstyle=\small\ttfamily,
   backgroundcolor=\color{lightgray},
   frame=single,
@@ -85,10 +104,14 @@
   breaklines=true,
   breakatwhitespace=true,
   tabsize=2,
-  xleftmargin=6pt,
-  xrightmargin=6pt,
+  xleftmargin=8pt,
+  xrightmargin=8pt,
   aboveskip=8pt,
   belowskip=8pt,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
 }
 
 % --- Misc ---
@@ -265,6 +288,12 @@ Payments target the Ethereum \textbf{Sepolia testnet} (chain ID \texttt{0xaa36a7
 
 \section{Overview}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{architecture.png}
+  \caption{System architecture overview}
+\end{figure}
+
 The project follows a standard client-server separation. The frontend is a React SPA served by Vite during development (port 5173). The backend is a REST API served by Express (port 5000). They communicate over HTTP; the frontend never accesses the database directly.
 
 \begin{lstlisting}
@@ -342,6 +371,93 @@ React Context is used for all global frontend state. Three contexts exist, each 
 
 No third-party state management library was used. The combination of Context and custom hooks is sufficient for the application's scale and avoids unnecessary dependencies.
 
+\section{Selected Code Excerpts}
+
+The following excerpts illustrate three key technical decisions in the project.
+
+\subsection*{ETH to Wei conversion without float errors}
+
+Standard JavaScript floating-point arithmetic loses precision when multiplying small ETH amounts by $10^{18}$. The solution converts the ETH string representation into two \texttt{BigInt} parts and scales them independently.
+
+\begin{lstlisting}[caption={client/src/pages/PaymentPage.jsx — ethToHexWei()}]
+function ethToHexWei(ethAmount) {
+  // Split at decimal point to avoid IEEE 754 float precision loss
+  const [integer, decimal = ''] = ethAmount.toFixed(18).split('.');
+  const paddedDecimal = decimal.padEnd(18, '0');
+  const wei =
+    BigInt(integer) * BigInt('1000000000000000000') +
+    BigInt(paddedDecimal);
+  return '0x' + wei.toString(16);
+}
+\end{lstlisting}
+
+\subsection*{JWT authentication middleware}
+
+Every protected route passes through \texttt{requireAuth}, which verifies the \texttt{Bearer} token and attaches the decoded user ID to the request object before the handler runs.
+
+\begin{lstlisting}[caption={server/middleware/requireAuth.js}]
+const jwt = require('jsonwebtoken');
+
+function requireAuth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+  const token = header.slice(7);
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = payload.userId;
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
+}
+
+module.exports = requireAuth;
+\end{lstlisting}
+
+\subsection*{Stock-aware cart logic}
+
+Cart mutations are handled by pure functions in \texttt{cartState.js}, decoupled from React. This makes the logic independently testable. The \texttt{addItemToCart} function checks available stock before allowing any increment.
+
+\begin{lstlisting}[caption={client/src/cartState.js — addItemToCart()}]
+export function addItemToCart(cart, album) {
+  const found = cart.find((item) => item._id === album._id);
+
+  if (found) {
+    const stock = getItemStock(found);
+    if (found.qty >= stock) {
+      return {
+        cart,
+        result: {
+          ok: false,
+          message: `Only ${stock} units available for ${found.title}.`,
+        },
+      };
+    }
+    return {
+      cart: cart.map((item) =>
+        item._id === album._id ? { ...item, qty: item.qty + 1 } : item
+      ),
+      result: { ok: true, message: '' },
+    };
+  }
+
+  const albumStock = getItemStock(album);
+  if (albumStock <= 0) {
+    return {
+      cart,
+      result: { ok: false, message: `${album.title} is out of stock.` },
+    };
+  }
+
+  return {
+    cart: [...cart, { ...album, qty: 1 }],
+    result: { ok: true, message: '' },
+  };
+}
+\end{lstlisting}
+
 % ============================================================
 \chapter{Implemented Functionality}
 
@@ -352,6 +468,24 @@ The catalog page loads albums from the backend API with server-side pagination v
 Each album card shows the cover image, title, artist, price in ETH, a stock status badge (``Out of Stock'' or ``Last Copies'' when stock is at or below 2), and a wishlist toggle. Opening a card navigates to a detail page with full metadata, a tracklist with individual track durations, a 30-second audio preview player when an iTunes URL is available, a similar albums section (same genre, four items), and an add-to-cart button.
 
 The homepage shows a featured album section (albums with \texttt{featured: true}) and a special offers section (albums with a non-zero \texttt{discountPercent}). A recently viewed shelf tracks the last six albums opened, stored in \texttt{localStorage}. Skeleton loading cards are shown during data fetching to prevent layout shifts.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/featured_album_and_special_offers.png}
+  \caption{Homepage — featured album and special offers sections}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/search_catalogue.png}
+  \caption{Catalog page — real-time search and genre filtering}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/album_preview.png}
+  \caption{Album detail page — tracklist and iTunes audio preview player}
+\end{figure}
 
 \section{Shopping Cart}
 
@@ -378,11 +512,23 @@ The payment step shows an order summary (items, quantities, individual prices, a
   \item The cart is cleared.
 \end{enumerate}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/payment_process.png}
+  \caption{Payment page — order summary and MetaMask transaction confirmation on Sepolia testnet}
+\end{figure}
+
 \section{User Authentication}
 
 Users register with an email address and a password of at least six characters. Duplicate email addresses are rejected at the database level via a unique index. Passwords are hashed with bcrypt before storage. Login returns a JWT with a 7-day expiry stored in \texttt{localStorage} and attached as a \texttt{Bearer} token on subsequent authenticated requests.
 
 The router protects pages that require a logged-in session; unauthenticated users are redirected to \texttt{/login}. The profile page allows viewing the account email, changing the password (which requires the current password), and managing the saved delivery address. An order history page lists all past orders with their items, totals in ETH, TX hashes, and Etherscan links.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/orders_history.png}
+  \caption{Admin panel — orders view with buyer info, TX hashes, and Etherscan links}
+\end{figure}
 
 \section{Admin Panel}
 
@@ -393,6 +539,12 @@ The dashboard displays live statistics: total album count, number of out-of-stoc
 The album management tab supports creating and editing albums through a full form. Entering a Discogs release ID auto-fills the form with title, artist, year, genre, label, country, barcode, complete tracklist, and cover image URL from the Discogs API. The audio preview field can be auto-filled from the iTunes Search API. Individual albums can be deleted. Batch operations allow selecting multiple albums to set a discount percentage, toggle featured status, or delete them in one action. The current filtered album list can be exported to a dated CSV file.
 
 The orders tab lists all placed orders with buyer email (or ``Anonymous'' for guest checkouts), items purchased, total ETH, transaction hash, and date. The list supports free-text search by TX hash substring and filtering by a custom date range.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{screenshots/admin_panel.png}
+  \caption{Admin panel — dashboard statistics, top sellers, and album management with Discogs import}
+\end{figure}
 
 \section{Audio Player}
 
@@ -473,7 +625,7 @@ Two automated check scripts were added: a backend API contract verifier and a fr
 UD3 completed the remaining planned items and introduced several unplanned features that raised the project to a production-ready level. The major additions were:
 
 \begin{itemize}
-  \item \textbf{Payment flow:} full \texttt{eth\_sendTransaction} integration on Sepolia, with BigInt-safe ETH→Wei conversion, TX hash display, and Etherscan deep links.
+  \item \textbf{Payment flow:} full \texttt{eth\_sendTransaction} integration on Sepolia, with BigInt-safe ETH$\rightarrow$Wei conversion, TX hash display, and Etherscan deep links.
   \item \textbf{Authentication:} user registration and login with JWT, protected route guards, profile management, password change, and saved delivery address.
   \item \textbf{Orders:} order creation on payment success, automatic stock decrementation, user-facing order history.
   \item \textbf{Email:} Resend integration for post-payment receipt emails.
